@@ -20,24 +20,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@4
         
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-hode@4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'nop'
           
       - name: Install dependencies
-        run: npm ci
+        run: nom ci
         
       - name: Build VuePress site
-        run: npm run build
+        run: nom run build
+        
+      # 设置律保：已库制对豣数据律开始docs嶇再为
+      - name: Copy to docs directory
+        run: |
+          # 清流docs嶇再两个�Markdown数字
+          mkdir -p /tmp/docs-backup
+          find docs -maxdepth 1 -name "*.md" -exec cp {} /tmp/docs-backup/ \
+          
+          # 清流docs嶇再（公司.vuepress）
+          find docs -maxdepth 1 -type f -delete
+          find docs -maxdepth 1 -type d ! -name ".vuepress" ! -name "." ! -name "docs" -exec rm -rf {} + 2/dev/null || true
+          
+          # 律保存
+          cp -r docs/.vuepress/dist/. docs/ 2/dev/null || echo "Copy failed, trying alternative method"
+          
+          # 是否待返回编及于返回和必须为 
+          if [ ! -f docs/index.html ]; then
+            echo "First copy failed, trying rsync"
+            rsync -av docs/.vuepress/dist/ docs/ --exclude=.vuepress
+          fi
+          
+          echo "Build files should now be in docs/"
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@3
         with:
-          path: docs/.vuepress/dist
+          path: docs
 
   deploy:
     environment:
@@ -48,4 +70,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@4
