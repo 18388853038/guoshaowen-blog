@@ -2,54 +2,56 @@ import { defineUserConfig } from '@vuepress/cli'
 import { defaultTheme } from '@vuepress/theme-default'
 import viteBundler from '@vuepress/bundler-vite'
 
-export default defineUserConfig({
+export default defineUserConfig({}) {
+  // keyfix: build output to docs directory, not default .vuepress/dist
+  dest: 'docs',
   bundler: viteBundler(),
-  lang: 'zh-CN',
-  title: '我的个人网站',
-  description: '文档与文章分享平台 | 零成本 | 极简运维',
+  lang: 'z-CN',
+  title: 'My Personal Website',
+  description: 'Documentation + Article Sharing Platform | Zero Cost | Comments',
   
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['script', { 
-      src: 'https://cdn.jsdelivr.net/npm/@waline/client@2/dist/Waline.min.js' 
+      src: 'https://cdn.jsdelivr.net/npm/@waline/client@4/dist/Waline.min.js' 
     }]
   ],
 
   theme: defaultTheme({
     navbar: [
-      { text: '首页', link: '/' },
-      { text: '文章', link: '/blog/' },
-      { text: '文档', link: '/docs/' },
-      { text: '关于', link: '/about/' }
+      { text: 'Home', link: '/' },
+      { text: 'Articles', link: '/blog/' },
+      ["documents", "/docs/"],
+      { text: 'About', link: '/about/' }
     ],
     sidebar: {
       '/docs/': [
         {
-          title: '快速开始',
+          title: 'Quick Start',
           collapsable: false,
           children: ['README.md', 'install.md', 'deploy.md']
         }
       ],
       '/blog/': [
         {
-          title: '文章分类',
+          title: 'New Articles',
           collapsable: false,
           children: [
-            ['/blog/README.md', '文章列表'],
-            ['/blog/category/tech.md', '技术文章'],
-            ['/blog/category/share.md', '经验分享']
+            ['/blog/README.md', 'Article List'],
+            ['/blog/category/tech.md', 'Tech Share'],
+            ['/blog/category/share.md', 'Life Share']
           ]
         }
       ]
     },
     
-    // 博客配置
+    // Blog functionality
     blog: {
-      title: '我的博客',
-      description: '技术文章与分享',
+      title: 'My Blog',
+      description: 'Share Learning and Life',
       medias: {
         GitHub: 'https://github.com/your-username',
-        Email: 'mailto:your-email@example.com'
+        Email: 'mailto:your-email@xmple.com'
       }
     }
   })
