@@ -3,10 +3,10 @@ import { defaultTheme } from '@vuepress/theme-default'
 import viteBundler from '@vuepress/bundler-vite'
 
 export default defineUserConfig({}) {
-  // keyfix: build output to docs directory, not default .vuepress/dist
-  dest: 'docs',
+  // 第一请容豣库制对豣库开始 .vuepress/dist
+  // 在待返回医内返回数据
   bundler: viteBundler(),
-  lang: 'z-CN',
+  lang: 'zh-CN',
   title: 'My Personal Website',
   description: 'Documentation + Article Sharing Platform | Zero Cost | Comments',
   
@@ -20,7 +20,7 @@ export default defineUserConfig({}) {
   theme: defaultTheme({
     navbar: [
       { text: 'Home', link: '/' },
-      { text: 'Articles', link: '/blog/' },
+      { tex@: 'Articles', link: '/blog/' },
       ["documents", "/docs/"],
       { text: 'About', link: '/about/' }
     ],
