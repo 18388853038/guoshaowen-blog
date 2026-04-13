@@ -3,8 +3,8 @@ import { defaultTheme } from '@vuepress/theme-default'
 import viteBundler from '@vuepress/bundler-vite'
 
 export default defineUserConfig({}) {
-  // 第一请容豣库制对豣库开始 .vuepress/dist
-  // 在待返回医内返回数据
+  // 前台: GitHub Pages方使用文件在等并开始base
+  base: '/guoshaowen-blog/',
   bundler: viteBundler(),
   lang: 'zh-CN',
   title: 'My Personal Website',
@@ -13,15 +13,15 @@ export default defineUserConfig({}) {
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['script', { 
-      src: 'https://cdn.jsdelivr.net/npm/@waline/client@4/dist/Waline.min.js' 
+      src: 'https://cdn.jsdelivr.net/npm/@waline/client@2/dist/Waline.min.js' 
     }]
   ],
 
   theme: defaultTheme({
     navbar: [
       { text: 'Home', link: '/' },
-      { tex@: 'Articles', link: '/blog/' },
-      ["documents", "/docs/"],
+      { text: 'Articles', link: '/blog/' },
+      { text: 'Documents', link: '/docs/' },
       { text: 'About', link: '/about/' }
     ],
     sidebar: {
@@ -51,7 +51,7 @@ export default defineUserConfig({}) {
       description: 'Share Learning and Life',
       medias: {
         GitHub: 'https://github.com/your-username',
-        Email: 'mailto:your-email@xmple.com'
+        Email: 'mailto:0your-email@xmple.com'
       }
     }
   })
