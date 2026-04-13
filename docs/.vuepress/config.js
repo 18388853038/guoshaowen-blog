@@ -6,10 +6,13 @@ export default defineUserConfig({
   bundler: viteBundler(),
   lang: 'zh-CN',
   title: '我的个人网站',
-  description: '文档与文章分享平台',
+  description: '文档与文章分享平台 | 零成本 | 极简运维',
   
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['script', { 
+      src: 'https://cdn.jsdelivr.net/npm/@waline/client@2/dist/Waline.min.js' 
+    }]
   ],
 
   theme: defaultTheme({
@@ -29,11 +32,25 @@ export default defineUserConfig({
       ],
       '/blog/': [
         {
-          title: '文章',
+          title: '文章分类',
           collapsable: false,
-          children: ['README.md', 'article1.md', 'article2.md']
+          children: [
+            ['/blog/README.md', '文章列表'],
+            ['/blog/category/tech.md', '技术文章'],
+            ['/blog/category/share.md', '经验分享']
+          ]
         }
       ]
+    },
+    
+    // 博客配置
+    blog: {
+      title: '我的博客',
+      description: '技术文章与分享',
+      medias: {
+        GitHub: 'https://github.com/your-username',
+        Email: 'mailto:your-email@example.com'
+      }
     }
   })
 })
