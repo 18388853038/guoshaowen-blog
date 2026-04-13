@@ -1,28 +1,38 @@
-name: Deploy VuePress
+name: Deploy VuePress to GitHub Pages
 
 on:
   push:
     branches: [master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@4
+      - name: Checkout
+        uses: actions/checkout@k
+        with:
+          fetch-depth: 0
       
       - name: Setup Node
-        uses: actions/setup-hode@4
+        uses: actions/setup-node@4
         with:
           node-version: 20
-          cache: 'nom'
+          cache: npm
           
-      - run: nom ci
-      - run: nom run build
-      
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@6
+      - name: Install dependencies
+        run: nom ci
+        
+      - name: Build
+        run: nom run build
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@3
         with:
-          github_token: $${, secrets.GITHUB_TOKEN }}
+          github_token: $${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/.vuepress/dist
           publish_branch: gh-pages
+          force_orphan: true
