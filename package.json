@@ -1,0 +1,16 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "description": "低成本个人社区网站 - 文档+文章",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs",
+    "deploy": "vuepress build docs && gh-pages -d docs/.vuepress/dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vuepress": "^2.0.0-rc.0",
+    "@vuepress/theme-default": "^2.0.0-rc.0",
+    "gh-pages": "^6.1.0"
+  }
+}
