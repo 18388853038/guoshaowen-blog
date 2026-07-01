@@ -51,6 +51,14 @@
       padding: 16px; font-size: 0.9rem;
     }
     .feature-item strong { display: block; margin-bottom: 4px; color: var(--accent); }
+    .nav-links {
+      display: flex; gap: 20px; margin-bottom: 40px;
+    }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
     footer {
       text-align: center; color: var(--muted); font-size: 0.85rem;
       padding: 32px 0; border-top: 1px solid var(--border); margin-top: 48px;
@@ -63,22 +71,38 @@
     @media (max-width: 600px) {
       .meta-grid, .feature-grid { grid-template-columns: 1fr; }
     }
-    .releases-list { list-style: none; }
-    .releases-list li { 
-      padding: 12px 0; border-bottom: 1px solid var(--border); 
-      display: flex; justify-content: space-between; align-items: center;
+    .step-list { list-style: none; counter-reset: step; }
+    .step-list li {
+      counter-increment: step; padding: 8px 0 8px 36px;
+      position: relative; margin-bottom: 4px;
     }
-    .releases-list li:last-child { border-bottom: none; }
-    .version-tag { color: var(--green); font-weight: 600; }
-    .date-tag { color: var(--muted); font-size: 0.85rem; }
+    .step-list li::before {
+      content: counter(step); position: absolute; left: 0; top: 8px;
+      width: 24px; height: 24px; background: #1f6feb33; color: var(--accent);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600;
+    }
+    code {
+      background: #1f6feb22; color: var(--accent); padding: 2px 6px;
+      border-radius: 4px; font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🦉 ECompany Asst</h1>
+    <h1>ECompany Asst</h1>
     <p class="subtitle">企业级 AI 助手桌面客户端 — 智能 · 高效 · 一体化</p>
 
-    <div class="card" style="text-align: center;">
+    <div class="nav-links">
+      <a href="#install">📥 安装</a>
+      <a href="#features">✨ 功能</a>
+      <a href="#started">🚀 上手</a>
+      <a href="#docs">📖 文档</a>
+      <a href="#releases">📋 版本</a>
+      <a href="https://github.com/18388853038/guoshaowen-blog" target="_blank">GitHub</a>
+    </div>
+
+    <div class="card" style="text-align: center;" id="install">
       <p style="margin-bottom: 20px; font-size: 1.05rem;">
         最新版本 <strong>v2.0.0</strong> <span class="badge">稳定版</span>
       </p>
@@ -86,71 +110,53 @@
         ⬇ 下载安装包 (160 MB)
       </a>
       <p style="margin-top: 12px; color: var(--muted); font-size: 0.85rem;">
-        Windows 10/11 64位 · NSIS 安装器 · 支持自定义安装路径
+        Windows 10/11 64位 · NSIS 安装器 · 支持自定义路径
       </p>
     </div>
 
     <div class="card">
       <h2>📦 版本信息</h2>
       <div class="meta-grid">
-        <div class="meta-item">
-          <div class="meta-label">当前版本</div>
-          <div class="meta-value">v2.0.0</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-label">发布日期</div>
-          <div class="meta-value" id="release-date">2026-07-01</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-label">文件大小</div>
-          <div class="meta-value">160.6 MB</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-label">系统要求</div>
-          <div class="meta-value">Windows 10/11 x64</div>
-        </div>
+        <div class="meta-item"><div class="meta-label">当前版本</div><div class="meta-value">v2.0.0</div></div>
+        <div class="meta-item"><div class="meta-label">发布日期</div><div class="meta-value">2026-07-01</div></div>
+        <div class="meta-item"><div class="meta-label">文件大小</div><div class="meta-value">160.6 MB</div></div>
+        <div class="meta-item"><div class="meta-label">系统要求</div><div class="meta-value">Windows 10/11 x64</div></div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="features">
       <h2>✨ 功能特性</h2>
       <div class="feature-grid">
-        <div class="feature-item">
-          <strong>🤖 AI 对话</strong>
-          内置企业级 AI CEO 助手，支持多轮对话、任务执行
-        </div>
-        <div class="feature-item">
-          <strong>🖱️ 桌面操作</strong>
-          截图、鼠标控制、窗口管理、键盘输入自动化
-        </div>
-        <div class="feature-item">
-          <strong>📁 文件管理</strong>
-          文件读写、目录操作、JSON/CSV 解析
-        </div>
-        <div class="feature-item">
-          <strong>🧩 工具扩展</strong>
-          支持动态安装/卸载自定义工具，灵活可扩展
-        </div>
-        <div class="feature-item">
-          <strong>👥 分身协作</strong>
-          通过 Sub-Agent 并行执行复杂任务
-        </div>
-        <div class="feature-item">
-          <strong>🧠 持久记忆</strong>
-          内置记忆引擎，支持长期知识存储与检索
-        </div>
+        <div class="feature-item"><strong>🤖 AI 对话</strong>内置企业级 AI CEO 助手，支持多轮对话与多步骤任务执行</div>
+        <div class="feature-item"><strong>🖱️ 桌面操作</strong>截图、鼠标控制、窗口管理、键盘输入自动化</div>
+        <div class="feature-item"><strong>📁 文件管理</strong>文件读写、目录操作、JSON/CSV 解析</div>
+        <div class="feature-item"><strong>🧩 工具扩展</strong>支持动态安装/卸载自定义工具，灵活可扩展</div>
+        <div class="feature-item"><strong>👥 分身协作</strong>通过 Sub-Agent 并行执行复杂任务</div>
+        <div class="feature-item"><strong>🧠 持久记忆</strong>内置记忆引擎，支持长期知识存储与语义检索</div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>📋 安装指南</h2>
-      <ol style="margin-left: 20px; line-height: 2;">
-        <li>点击上方按钮下载最新安装包</li>
-        <li>双击运行安装程序</li>
-        <li>选择安装路径（或使用默认路径）</li>
-        <li>安装完成后桌面自动生成快捷方式</li>
-        <li>首次启动自动配置环境并初始化后端服务</li>
+    <div class="card" id="started">
+      <h2>🚀 快速上手</h2>
+      <ol class="step-list">
+        <li>下载安装包并运行安装程序</li>
+        <li>安装完成后双击桌面快捷方式启动</li>
+        <li>等待后端服务初始化（约 5-10 秒）</li>
+        <li>在对话窗口输入指令，AI CEO 即刻响应</li>
       </ol>
+      <p style="margin-top: 16px; color: var(--muted); font-size: 0.9rem;">
+        💡 试试说：<em>"帮我看看桌面上有什么"</em> 或 <em>"打开我的电脑"</em>
+      </p>
+    </div>
+
+    <div class="card" id="docs">
+      <h2>📖 文档</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+        <a class="btn-small" href="https://github.com/18388853038/guoshaowen-blog/blob/master/docs/release/install-guide.md">📥 安装指南</a>
+        <a class="btn-small" href="https://github.com/18388853038/guoshaowen-blog/blob/master/docs/release/quickstart-guide.md">🚀 快速上手</a>
+        <a class="btn-small" href="https://github.com/18388853038/guoshaowen-blog/blob/master/docs/release/changelog-v2.0.0.md">📋 版本说明</a>
+        <a class="btn-small" href="https://github.com/18388853038/guoshaowen-blog#readme">📄 README</a>
+      </div>
     </div>
 
     <div class="card">
@@ -160,19 +166,25 @@
         <div class="feature-item"><strong>后端</strong> Node.js + Express + WebSocket</div>
         <div class="feature-item"><strong>桌面</strong> Electron 42</div>
         <div class="feature-item"><strong>构建</strong> electron-builder</div>
-        <div class="feature-item"><strong>AI</strong> OpenClaw 多模型</div>
-        <div class="feature-item"><strong>图标</strong> 品牌定制</div>
+        <div class="feature-item"><strong>AI 引擎</strong> OpenClaw 多模型</div>
+        <div class="feature-item"><strong>内置工具</strong> 230+ 工具 | MCP 协议</div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>📜 版本历史</h2>
-      <ul class="releases-list">
-        <li>
-          <span><span class="version-tag">v2.0.0</span> — 正式发布</span>
-          <span class="date-tag">2026-07-01</span>
-        </li>
-      </ul>
+    <div class="card" id="releases">
+      <h2>📋 版本历史</h2>
+      <table style="width:100%; border-collapse: collapse; margin-top: 8px;">
+        <tr style="border-bottom: 1px solid var(--border);">
+          <th style="text-align:left; padding: 8px 0; color: var(--muted); font-weight:500;">版本</th>
+          <th style="text-align:left; padding: 8px 0; color: var(--muted); font-weight:500;">日期</th>
+          <th style="text-align:left; padding: 8px 0; color: var(--muted); font-weight:500;">说明</th>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0;"><span style="color: var(--green); font-weight:600;">v2.0.0</span></td>
+          <td style="padding: 12px 0;">2026-07-01</td>
+          <td style="padding: 12px 0;">首次正式发布</td>
+        </tr>
+      </table>
     </div>
 
     <footer>
@@ -182,10 +194,5 @@
       </p>
     </footer>
   </div>
-
-  <script>
-    // 自动更新发布日期
-    document.getElementById('release-date').textContent = new Date().toISOString().split('T')[0];
-  </script>
 </body>
 </html>
