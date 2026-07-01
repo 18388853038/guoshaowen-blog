@@ -1,0 +1,77 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eCompany · AI 虚拟公司</title>
+    <meta name="description" content="eCompany — 41 名 AI 员工，你的数字合伙人" />
+    <script>
+      document.addEventListener('dragenter', function(e) { e.preventDefault(); }, false);
+      document.addEventListener('dragover', function(e) { e.preventDefault(); }, false);
+      document.addEventListener('dragleave', function(e) { e.preventDefault(); }, false);
+      document.addEventListener('drop', function(e) { e.preventDefault(); }, false);
+    </script>
+    <style>
+      .drag-overlay, .drag-hint, .drop-overlay, .drop-box,
+      [class*="drag-overlay"], [class*="drop-overlay"] { display: none !important; }
+    </style>
+    <script type="module" crossorigin src="/assets/index-DFBPh7Eh.js?v=20260608v18"></script>
+    <link rel="modulepreload" crossorigin href="/assets/_plugin-vue_export-helper-jFvxbE7k.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-Dvp00ukB.css">
+  <script src="/lock.js"></script></head>
+  <body>
+    <div id="app"></div>
+
+    <style>
+      #_floatNav {
+        position: fixed; top: 12px; right: 12px;
+        display: flex; gap: 4px; z-index: 9999;
+      }
+      #_floatNav a {
+        display: flex; align-items: center; gap: 3px;
+        padding: 5px 10px; border-radius: 8px; font-size: 11px;
+        color: #c0c4cc; background: rgba(26,26,46,0.85);
+        border: 1px solid rgba(255,255,255,0.08);
+        text-decoration: none; cursor: pointer;
+        transition: all .15s; backdrop-filter: blur(8px); white-space: nowrap;
+      }
+      #_floatNav a:hover {
+        background: rgba(78,205,196,0.12);
+        border-color: rgba(78,205,196,0.25);
+        color: #4ecdc4; transform: translateY(-1px);
+      }
+      @media (max-width: 768px) { #_floatNav { display: none; } }
+      body > div:not(#app):not(#_screenSaver):not(#_floatNav) { display: none !important; }
+    </style>
+
+    <div id="_floatNav">
+      <a href="/knowledge-base.html" target="_blank">📚 知识库</a>
+      <a href="/bi-dashboard.html" target="_blank">📊 数据看板</a>
+      <a href="/automation.html" target="_blank">⚡ 自动化</a>
+      <a href="/evolution.html" target="_blank">🧬 自我进化</a>
+    </div>
+
+    <script>
+      (function() {
+        function killFloating() {
+          var nodes = document.body.childNodes;
+          for (var i = nodes.length - 1; i >= 0; i--) {
+            var el = nodes[i];
+            if (el.nodeType !== 1) continue;
+            if (el.id === 'app' || el.id === '_screenSaver' || el.id === '_floatNav') continue;
+            if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'LINK') continue;
+            el.parentNode && el.parentNode.removeChild(el);
+          }
+        }
+        killFloating();
+        var obs = new MutationObserver(function() { killFloating(); });
+        obs.observe(document.body, { childList: true, subtree: true });
+        window.addEventListener('load', function() { setTimeout(killFloating, 500); });
+        setTimeout(killFloating, 1500);
+      })();
+    </script>
+
+  <script src="/i18n-loader.js"></script>
+  <script src="/inject.js?v=20260608v18"></script></body>
+</html>
