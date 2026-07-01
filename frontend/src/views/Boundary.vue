@@ -69,8 +69,8 @@
             </td>
             <td>
               <div v-if="agentOverrides[a.id]" style="font-size:10px;color:var(--fg2)">
-                <span v-if="agentOverrides[a.id].rateLimits">{{ __('boundaryCustomLimitLabel') }}</span>
-                <span v-if="agentOverrides[a.id].blockedTools">, {{ agentOverrides[a.id].blockedTools.length }}  {{ __('boundaryBlockedToolLabel', { count: agentOverrides[a.id].blockedTools.length }) }}</span>
+                <span v-if="agentOverrides[a.id].rateLimits">自定义频控</span>
+                <span v-if="agentOverrides[a.id].blockedTools">, {{ agentOverrides[a.id].blockedTools.length }} 禁用工具</span>
               </div>
               <span v-else style="font-size:10px;color:var(--fg3)">{{ __('boundaryUseDefault') }}</span>
             </td>
@@ -158,24 +158,9 @@ export default {
     }
   },
   mounted() {
-    // First fetch boundary data, then agents
-    var self = this;
-    this.fetchAll().then(function() {
-      return API.get('/api/agents');
-    }).then(function(d) {
-      if (d && d.agents && d.agents.length > 0) {
-        self.agents = d.agents;
-      } else {
-        // Fallback: build agent list from boundary agentOverrides
-        var ovKeys = Object.keys(self.agentOverrides || {});
-        if (ovKeys.length > 0) {
-          self.agents = ovKeys.map(function(id) {
-            var name = id.charAt(0).toUpperCase() + id.slice(1);
-            return { id: id, name_cn: name, name: name, role: 'agent' };
-          });
-        }
-      }
-    });
+    Promise.all([API.get('/api/agents'), this.fetchAll()]).then(([d]) => {
+      if (d.agents) this.agents = d.agents
+    })
   },
   methods: {
     async fetchAll() {
@@ -186,30 +171,22 @@ export default {
           this.limits = { ...d.rateLimits }
           this.agentOverrides = d.agentOverrides || {}
           this.agentStats = d.stats ? d.stats.byAgent || {} : {}
-          this.violations = (d.stats && d.stats.recentViolations) ? d.stats.recentViolations : []
-          if (d.toolRateLimits) {
+          this.violations = []
+          if (d.stats && d.stats.byTool) {
             Object.keys(d.toolRateLimits).forEach(t => {
               this.toolLimitsEdit[t] = { ...d.toolRateLimits[t] }
             })
           }
-          if (window.__appError) window.__appError('\u2714 \u5df2\u5237\u65b0')
         }
-      } catch(e) {
-        if (window.__appError) window.__appError('\u2716 \u5237\u65b0\u5931\u8d25: ' + e.message)
-      }
+      } catch(e) {}
     },
     async saveLimits() {
       try {
         const r = await API.post('/api/harness/boundary/limits', { global: this.limits })
-        if (r && r.ok) {
+        if (r.ok) {
           this.boundary.rateLimits = { ...this.limits }
-          if (window.__appError) window.__appError('\u2714 \u5199\u5165\u4fdd\u5b58\u6210\u529f')
-        } else {
-          if (window.__appError) window.__appError('\u2716 \u4fdd\u5b58\u5931\u8d25: ' + (r && r.error ? r.error : '\u670d\u52a1\u5668\u54cd\u5e94\u5f02\u5e38'))
         }
-      } catch(e) {
-        if (window.__appError) window.__appError('\u2716 \u4fdd\u5b58\u5931\u8d25: ' + e.message)
-      }
+      } catch(e) {}
     },
     async saveToolLimit(tool) {
       try {
@@ -247,14 +224,9 @@ export default {
       if (this.editBlockedTools.length > 0) {
         override.blockedTools = this.editBlockedTools
       }
-      var r = await API.post('/api/harness/boundary/agent/' + this.editingAgent, override)
-      if (r && r.ok) {
-        this.agentOverrides[this.editingAgent] = override
-        if (window.__appError) window.__appError('\u2714 Agent \u914d\u7f6e\u5df2\u4fdd\u5b58')
-        this.editingAgent = null
-      } else {
-        if (window.__appError) window.__appError('\u2716 \u4fdd\u5b58\u5931\u8d25: ' + (r && r.error ? r.error : '\u670d\u52a1\u5668\u54cd\u5e94\u5f02\u5e38'))
-      }
+      await API.post('/api/harness/boundary/agent/' + this.editingAgent, override)
+      this.agentOverrides[this.editingAgent] = override
+      this.editingAgent = null
     },
     formatTime(ts) {
       if (!ts) return '-'

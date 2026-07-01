@@ -1,33 +1,11 @@
 <template>
   <div class="page" style="max-width:100%">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <h2 style="margin:0;display:flex;align-items:center;gap:8px">
-        📋 {{ __('tasksTitle') }} ({{ filtered.length }})
-        <span v-if="selectedIds.length" style="font-size:12px;color:var(--accent);font-weight:400">已选 {{ selectedIds.length }} 项</span>
-      </h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2 style="margin:0">📋 {{ __('tasksTitle') }} ({{ filtered.length }})</h2>
       <div style="display:flex;gap:6px">
-        <div v-if="selectedIds.length" style="display:flex;gap:6px;align-items:center">
-          <button @click="batchComplete" class="btn btn-primary" style="font-size:11px;padding:6px 10px">✅ 批量完成</button>
-          <button @click="showBatchAssign=true" class="btn" style="font-size:11px;padding:6px 10px;border:1px solid var(--border);border-radius:6px">👤 批量指派</button>
-          <button @click="batchDelete" class="btn btn-danger" style="font-size:11px;padding:6px 10px">🗑️ 批量删除</button>
-          <button @click="selectedIds=[]" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">✕ 取消</button>
-        </div>
         <button @click="ceoViewTasks" class="btn btn-ghost" style="font-size:11px;padding:6px 10px">🤖 {{ __('tasksCeoView') || 'CEO查看' }}</button>
         <button @click="ceoAssign" class="btn btn-primary" style="font-size:11px;padding:6px 10px">🤖 {{ __('tasksCeoAssign') || 'CEO智能分派' }}</button>
         <button @click="showCreate=!showCreate" class="btn btn-primary">+ {{ __('tasksNewTask') }}</button>
-      </div>
-    </div>
-
-    <!-- 批量指派弹窗 -->
-    <div v-if="showBatchAssign" class="settings-section" style="margin-bottom:16px;padding:12px">
-      <h3 style="margin:0 0 8px 0;font-size:14px">👤 批量指派 {{ selectedIds.length }} 个任务</h3>
-      <div style="display:flex;gap:8px;align-items:center">
-        <select v-model="batchAssignTarget" style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--fg);font-size:12px;flex:1">
-          <option value="">-- 选择指派人 --</option>
-          <option v-for="a in agents" :key="a.id" :value="a.id">{{ a.name_cn }}</option>
-        </select>
-        <button @click="batchAssign" :disabled="!batchAssignTarget" class="btn btn-primary" style="font-size:12px;padding:6px 12px">确认指派</button>
-        <button @click="showBatchAssign=false;batchAssignTarget=''" class="btn btn-ghost" style="font-size:12px;padding:6px 12px">取消</button>
       </div>
     </div>
 
@@ -91,19 +69,11 @@
       </div>
     </div>
 
-    <!-- 全选 -->
-    <div v-if="filtered.length" style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:4px 12px">
-      <input type="checkbox" :checked="filtered.length>0 && selectedIds.length===filtered.length" @change="toggleSelectAll" style="accent-color:var(--accent);cursor:pointer">
-      <span style="font-size:11px;color:var(--fg2);cursor:pointer" @click="toggleSelectAll">全选</span>
-    </div>
-
     <!-- 任务列表 -->
     <div v-if="!filtered.length" class="empty-state"><div class="icon">📋</div><p>{{ __('tasksNoTasks') }}</p></div>
     <div v-for="t in filtered" :key="t.id" class="task-item">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
-          <input type="checkbox" v-model="selectedIds" :value="t.id" style="accent-color:var(--accent);cursor:pointer;flex-shrink:0">
-          <div style="min-width:0">
+        <div style="flex:1;min-width:0">
           <h4>{{ t.title }}</h4>
           <div class="meta">
             <span>{{ getAssignee(t.assigneeId||t.assignee) || __('tasksUnassigned') }}</span>
@@ -113,14 +83,14 @@
           </div>
           <div v-if="t.description" style="font-size:11px;color:var(--fg3);margin-top:4px">{{ t.description }}</div>
         </div>
-      </div>
-      <div style="display:flex;gap:4px;flex-shrink:0">
+        <div style="display:flex;gap:4px;flex-shrink:0">
           <button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" @click="editTask(t)">✏️</button>
           <button v-if="t.status==='todo'||t.status==='pending'" class="btn btn-ghost" style="font-size:10px;padding:4px 8px" @click="updateTaskStatus(t,'in_progress')">认领</button>
           <button v-if="t.status==='assigned'||t.status==='in_progress'" class="btn btn-primary" style="font-size:10px;padding:4px 8px" @click="updateTaskStatus(t,'done')">完成</button>
           <button class="btn btn-danger" style="font-size:10px;padding:4px 8px" @click="deleteTask(t)">×</button>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -136,10 +106,7 @@ export default {
       editForm: { title: '', desc: '', priority: 'medium', assigneeId: '', status: 'todo', deadline: '' },
       filters: [],
       ceoResult: null,
-      ceoLoading: false,
-      selectedIds: [],
-      showBatchAssign: false,
-      batchAssignTarget: ''
+      ceoLoading: false
     }
   },
   computed: {
@@ -235,56 +202,6 @@ export default {
       if (!confirm('确认删除任务「' + task.title + '」？')) return
       const r = await API.del('/api/tasks/' + task.id)
       if (r && r.message) {
-        this.loadTasks()
-      }
-    },
-    // 全选/取消全选
-    toggleSelectAll() {
-      if (this.selectedIds.length === this.filtered.length) {
-        this.selectedIds = []
-      } else {
-        this.selectedIds = this.filtered.map(function(t) { return t.id })
-      }
-    },
-    // 批量完成
-    async batchComplete() {
-      if (!this.selectedIds.length) return
-      if (!confirm('确认完成 ' + this.selectedIds.length + ' 个任务？')) return
-      const r = await API.post('/api/tasks/batch', {
-        ids: this.selectedIds,
-        action: 'status',
-        status: 'done'
-      })
-      if (r && r.message) {
-        this.selectedIds = []
-        this.loadTasks()
-      }
-    },
-    // 批量指派
-    async batchAssign() {
-      if (!this.selectedIds.length || !this.batchAssignTarget) return
-      const r = await API.post('/api/tasks/batch', {
-        ids: this.selectedIds,
-        action: 'assign',
-        assigneeId: this.batchAssignTarget
-      })
-      if (r && r.message) {
-        this.selectedIds = []
-        this.showBatchAssign = false
-        this.batchAssignTarget = ''
-        this.loadTasks()
-      }
-    },
-    // 批量删除
-    async batchDelete() {
-      if (!this.selectedIds.length) return
-      if (!confirm('确认删除 ' + this.selectedIds.length + ' 个任务？此操作不可恢复！')) return
-      const r = await API.post('/api/tasks/batch', {
-        ids: this.selectedIds,
-        action: 'delete'
-      })
-      if (r && r.message) {
-        this.selectedIds = []
         this.loadTasks()
       }
     },

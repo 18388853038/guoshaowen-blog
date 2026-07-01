@@ -200,13 +200,6 @@
               <p>全员审计检查</p>
             </div>
           </div>
-          <div class="command-card highlight" @click="showCreateAvatar = true">
-            <div class="cmd-icon">🤖</div>
-            <div class="cmd-info">
-              <h4>创建分身</h4>
-              <p>创建新的AI员工分身</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -305,30 +298,6 @@
       </div>
     </div>
 
-    <!-- 创建分身模态框 -->
-    <div v-if="showCreateAvatar" class="modal" @click.self="showCreateAvatar = false">
-      <div class="modal-content" style="max-width:480px">
-        <h3>🤖 创建新 AI 分身</h3>
-        <p style="margin:8px 0 16px;color:var(--fg3);font-size:13px;">CEO 将指派一名新的 AI 员工加入团队</p>
-        <div class="form-group">
-          <label>分身名称 *</label>
-          <input v-model="avatarForm.name" placeholder="例如: 数据分析助手" style="width:100%;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg1);color:var(--fg1);" />
-        </div>
-        <div class="form-group">
-          <label>身份 / 职责</label>
-          <input v-model="avatarForm.title" placeholder="例如: AI 数据分析师" style="width:100%;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg1);color:var(--fg1);" />
-        </div>
-        <div class="form-group">
-          <label>图标</label>
-          <input v-model="avatarForm.icon" placeholder="🤖" maxlength="2" style="width:80px;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg1);color:var(--fg1);text-align:center;font-size:20px;" />
-        </div>
-        <div class="modal-actions" style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
-          <button @click="showCreateAvatar = false" class="btn-secondary">取消</button>
-          <button @click="createAvatar" class="btn-primary" :disabled="!avatarForm.name.trim()">创建</button>
-        </div>
-      </div>
-    </div>
-
     <!-- 加载状态 -->
     <div v-if="loading" class="loading">
       <div class="spinner"></div>
@@ -362,9 +331,8 @@ export default {
       totalPermissions: 0,
       roles: [],
       allSkillsByCategory: {},
-      roleSkillsLoading: false,
-      showCreateAvatar: false,
-      avatarForm: { name: '', title: '', icon: '🤖' }
+      roleSkillsLoading: false
+    }
   },
   async mounted() {
     await this.loadData()
@@ -523,30 +491,6 @@ export default {
         'audit': '执行审计'
       }
       alert(`执行命令: ${prompts[command]}\n\n功能开发中...`)
-    },
-    async createAvatar() {
-      var form = this.avatarForm
-      if (!form.name.trim()) return
-      this.loading = true
-      try {
-        var resp = await fetch('/api/employees', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name_cn: form.name.trim(), title: form.title.trim(), icon: form.icon || '🤖' })
-        })
-        var data = await resp.json()
-        if (data.ok) {
-          alert('✅ 分身创建成功: ' + form.icon + ' ' + form.name.trim() + (form.title ? ' (' + form.title + ')' : ''))
-          this.showCreateAvatar = false
-          this.avatarForm = { name: '', title: '', icon: '🤖' }
-          await this.loadAgents()
-        } else {
-          alert('❌ 创建失败: ' + (data.error || '未知错误'))
-        }
-      } catch(e) {
-        alert('❌ 网络错误: ' + e.message)
-      }
-      this.loading = false
     },
     exportAudit() {
       alert('导出审计日志...')
@@ -1033,18 +977,6 @@ export default {
 
 .command-card.emergency {
   border: 2px solid var(--danger, #ef4444);
-.command-card.emergency {
-  border: 2px solid var(--danger, #ef4444);
-}
-
-.command-card.highlight {
-  border: 2px solid var(--accent);
-  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, transparent 100%);
-}
-
-.command-card.highlight:hover {
-  border-color: var(--accent-hover, #818cf8);
-  box-shadow: 0 0 12px rgba(99,102,241,0.2);
 }
 
 .cmd-icon {

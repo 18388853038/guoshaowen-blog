@@ -1,38 +1,38 @@
 <template>
   <div class="workflow-page">
     <div class="page-header">
-      <h2>📋 {{ __('workflowTitle') }}</h2>
-      <p class="desc">{{ __('workflowDesc') }} — {{ __('workflowDragNodes') }}、{{ __('workflowConfigSteps') }}、一键执行</p>
+      <h2>📋 工作流编辑器</h2>
+      <p class="desc">可视化 DAG 工作流 — 拖拽节点、配置步骤、一键执行</p>
     </div>
 
     <!-- Workflow List -->
     <div v-if="!editing" class="workflow-list">
       <div class="toolbar">
-        <button class="btn btn-primary" @click="newWorkflow">+ {{ __('workflowNew') }}</button>
+        <button class="btn btn-primary" @click="newWorkflow">+ 新建工作流</button>
       </div>
       
       <div class="template-section" v-if="templates.length">
-        <h3>📦 {{ __('workflowTemplate') }}</h3>
+        <h3>📦 模板</h3>
         <div class="template-grid">
           <div v-for="t in templates" :key="t.id" class="template-card" @click="createFromTemplate(t)">
             <div class="t-name">{{ t.name }}</div>
             <div class="t-desc">{{ t.description }}</div>
-            <div class="t-meta">{{ t.nodes.length }} {{ __('workflowNodes') }}</div>
+            <div class="t-meta">{{ t.nodes.length }} 个节点</div>
           </div>
         </div>
       </div>
       
       <div class="saved-section">
-        <h3>💾 已{{ __('workflowSave') }}的工作流</h3>
-        <div v-if="workflows.length === 0" class="empty-state">{{ __('workflowNoList') }}，点击上方按钮新建</div>
+        <h3>💾 已保存的工作流</h3>
+        <div v-if="workflows.length === 0" class="empty-state">暂无工作流，点击上方按钮新建</div>
         <div v-for="wf in workflows" :key="wf.id" class="wf-card">
           <div class="wf-info" @click="editWorkflow(wf)">
             <div class="wf-name">{{ wf.name }}</div>
-            <div class="wf-desc">{{ wf.description || __('workflowNoDesc') }}</div>
+            <div class="wf-desc">{{ wf.description || '无描述' }}</div>
             <div class="wf-meta">
               <span class="wf-status" :class="wf.status">{{ statusText(wf.status) }}</span>
-              <span>{{ wf.nodes.length }} {{ __('workflowNode') }}</span>
-              <span>{{ wf.runs || 0 }} {{ __('workflowExecCount') }}</span>
+              <span>{{ wf.nodes.length }} 节点</span>
+              <span>{{ wf.runs || 0 }} 次执行</span>
             </div>
           </div>
           <div class="wf-actions">
@@ -47,12 +47,12 @@
     <!-- Workflow Editor -->
     <div v-else class="editor-container">
       <div class="editor-toolbar">
-        <input v-model="editName" class="wf-title-input" placeholder="工作流{{ __('workflowNodeName') }}" />
+        <input v-model="editName" class="wf-title-input" placeholder="工作流名称" />
         <div class="editor-actions">
-          <button class="btn btn-ghost" @click="validateWorkflow">🔍 {{ __('workflowValidate') }}</button>
-          <button class="btn btn-ghost" @click="saveWorkflow">💾 {{ __('workflowSave') }}</button>
-          <button class="btn btn-primary" @click="saveAndRun">▶️ {{ __('workflowSave') }}并执行</button>
-          <button class="btn btn-ghost" @click="cancelEdit">← {{ __('workflowBack') }}</button>
+          <button class="btn btn-ghost" @click="validateWorkflow">🔍 验证</button>
+          <button class="btn btn-ghost" @click="saveWorkflow">💾 保存</button>
+          <button class="btn btn-primary" @click="saveAndRun">▶️ 保存并执行</button>
+          <button class="btn btn-ghost" @click="cancelEdit">← 返回</button>
         </div>
       </div>
       
@@ -79,22 +79,22 @@
         
         <!-- Node Properties Panel -->
         <div v-if="selectedNode" class="node-panel">
-          <h4>⚙️ {{ __('workflowNode') }}属性</h4>
+          <h4>⚙️ 节点属性</h4>
           <div class="prop-row">
-            <label>{{ __('workflowNodeName') }}</label>
+            <label>名称</label>
             <input v-model="selectedNode.label" class="prop-input" />
           </div>
           <div class="prop-row">
-            <label>{{ __('workflowNodeType') }}</label>
+            <label>类型</label>
             <select v-model="selectedNode.type" class="prop-input">
-              <option value="task">{{ __('workflowTypeTask') }}</option>
-              <option value="parallel">{{ __('workflowTypeParallel') }}</option>
-              <option value="condition">{{ __('workflowTypeCondition') }}</option>
-              <option value="notification">{{ __('workflowTypeNotify') }}</option>
+              <option value="task">任务</option>
+              <option value="parallel">并行</option>
+              <option value="condition">条件</option>
+              <option value="notification">通知</option>
             </select>
           </div>
           <div class="prop-row">
-            <label>{{ __('workflowNodeDesc') }}</label>
+            <label>描述</label>
             <textarea v-model="selectedNode.description" class="prop-input" rows="2"></textarea>
           </div>
           <div class="prop-row">
@@ -102,25 +102,24 @@
             <input v-model.number="selectedNode.estimatedMinutes" type="number" class="prop-input" min="1" />
           </div>
           <div class="prop-actions">
-            <button class="btn btn-sm btn-danger" @click="deleteNode(selectedNode)">删除{{ __('workflowNode') }}</button>
+            <button class="btn btn-sm btn-danger" @click="deleteNode(selectedNode)">删除节点</button>
           </div>
         </div>
       </div>
       
       <!-- Add Node Toolbar -->
       <div class="add-node-bar">
-        <button class="btn btn-sm" @click="addNode('task')">+ {{ __('workflowTypeTask') }}</button>
-        <button class="btn btn-sm" @click="addNode('parallel')">+ {{ __('workflowTypeParallel') }}</button>
-        <button class="btn btn-sm" @click="addNode('condition')">+ {{ __('workflowTypeCondition') }}</button>
-        <button class="btn btn-sm" @click="addNode('notification')">+ {{ __('workflowTypeNotify') }}</button>
-        <span class="add-hint">点击画布空白处添加{{ __('workflowNode') }}，点击连接线</span>
+        <button class="btn btn-sm" @click="addNode('task')">+ 任务</button>
+        <button class="btn btn-sm" @click="addNode('parallel')">+ 并行</button>
+        <button class="btn btn-sm" @click="addNode('condition')">+ 条件</button>
+        <button class="btn btn-sm" @click="addNode('notification')">+ 通知</button>
+        <span class="add-hint">点击画布空白处添加节点，点击连接线</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { __ } from '../i18n'
 import { API } from '../main.js'
 export default {
   data() {
@@ -146,11 +145,11 @@ export default {
       })
     },
     statusText(s) {
-      return { draft: this.__('workflowStatusDraft'), active: this.__('workflowStatusActive'), running: this.__('workflowStatusRunning'), completed: this.__('workflowStatusDone'), failed: '失败' }[s] || s
+      return { draft: '草稿', active: '活跃', running: '运行中', completed: '已完成', failed: '失败' }[s] || s
     },
     newWorkflow() {
       this.editId = null
-      this.editName = this.__('workflowNewName')
+      this.editName = '新工作流'
       this.nodes = []
       this.edges = []
       this.selectedNode = null
@@ -191,7 +190,7 @@ export default {
     addNode(type, x, y) {
       this.nodeCounter++
       var id = 'n' + this.nodeCounter
-      var label = { task: '新' + this.__('workflowTypeTask'), parallel: this.__('workflowTypeParallel'), condition: this.__('workflowTypeCondition') + '判断', notification: this.__('workflowTypeNotify') }[type] || '新' + this.__('workflowNode')
+      var label = { task: '新任务', parallel: '并行', condition: '条件判断', notification: '通知' }[type] || '新节点'
       var node = { id, type, label, description: '', estimatedMinutes: 30, x: x || 100 + (this.nodeCounter % 5) * 180, y: y || 100 + Math.floor(this.nodeCounter / 5) * 100 }
       this.nodes.push(node)
       this.selectedNode = node
@@ -208,11 +207,11 @@ export default {
       return { task: '#1a1740', parallel: '#1a3a5c', condition: '#3a1a5c', notification: '#1a5c3a' }[n.type] || '#1a1740'
     },
     nodeTypeLabel(t) {
-      return { task: this.__('workflowTypeTask'), parallel: this.__('workflowTypeParallel'), condition: this.__('workflowTypeCondition'), notification: this.__('workflowTypeNotify') }[t] || t
+      return { task: '任务', parallel: '并行', condition: '条件', notification: '通知' }[t] || t
     },
     validateWorkflow() {
       API.post('/api/workflows/validate', { nodes: this.nodes, edges: this.edges }).then(d => {
-        alert(d.validation && d.validation.valid ? '✅ 拓扑' + this.__('workflowValidate') + '通过' : '❌ ' + (d.validation && d.validation.error || this.__('workflowValidate') + '失败'))
+        alert(d.validation && d.validation.valid ? '✅ 拓扑验证通过' : '❌ ' + (d.validation && d.validation.error || '验证失败'))
       })
     },
     saveWorkflow() {
@@ -222,9 +221,9 @@ export default {
       API[method](url, data).then(d => {
         if (d.ok) {
           this.editId = d.workflow ? d.workflow.id : this.editId
-          alert('✅ 已' + this.__('workflowSave'))
+          alert('✅ 已保存')
           this.load()
-        } else { alert('❌ ' + (d.error || this.__('workflowSaveFail'))) }
+        } else { alert('❌ ' + (d.error || '保存失败')) }
       }).catch(e => alert('❌ ' + e.message))
     },
     saveAndRun() {
@@ -233,7 +232,7 @@ export default {
       setTimeout(() => {
         if (this.editId) {
           API.post('/api/workflows/' + this.editId + '/execute').then(d => {
-            alert(d.ok ? '✅ ' + this.__('workflowStarted') : '❌ ' + (d.result && d.result.error || this.__('workflowExecFail')))
+            alert(d.ok ? '✅ 工作流已启动' : '❌ ' + (d.result && d.result.error || '执行失败'))
           })
         }
       }, 500)
@@ -241,12 +240,12 @@ export default {
     runWorkflow(wf) {
       if (wf.status === 'running') return
       API.post('/api/workflows/' + wf.id + '/execute').then(d => {
-        alert(d.ok ? '✅ ' + this.__('workflowStarted') : '❌ ' + (d.result && d.result.error || this.__('workflowExecFail')))
+        alert(d.ok ? '✅ 工作流已启动' : '❌ ' + (d.result && d.result.error || '执行失败'))
         this.load()
       })
     },
     deleteWorkflow(wf) {
-      if (!confirm(this.__('workflowConfirmDel') + ' "' + wf.name + '"？')) return
+      if (!confirm('确定删除工作流 "' + wf.name + '"？')) return
       API.del('/api/workflows/' + wf.id).then(d => {
         if (d.ok) { this.load() }
       })

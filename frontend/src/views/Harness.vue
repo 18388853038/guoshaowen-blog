@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page">
     <h2>🧠 {{ __('harnessTitle') }}</h2>
     <p class="desc">{{ __('harnessDesc') }}</p>
@@ -6,7 +6,7 @@
     <div class="status-bar">
       <span :class="['badge', connected ? 'badge-online' : 'badge-offline']">{{ connected ? __('harnessRealtime') : __('harnessOffline') }}</span>
       <span class="badge badge-info">{{ __('harnessUpdated') }} {{ lastUpdate }}</span>
-      <button class="refresh-btn" @click="fetchAll" :disabled="loading">↻ {{ loading ? '🔄 ...' : __('harnessRefresh') }}</button>
+      <button class="refresh-btn" @click="fetchAll">↻ {{ __('harnessRefresh') }}</button>
     </div>
 
     <div class="stats-row">
@@ -44,39 +44,9 @@
       <button :class="['tab-btn', tab==='cost'&&'active']" @click="tab='cost'">💰 {{ __('harnessTabCost') }}</button>
       <button :class="['tab-btn', tab==='retention'&&'active']" @click="tab='retention'">📈 {{ __('harnessTabRetention') }}</button>
       <button :class="['tab-btn', tab==='sink'&&'active']" @click="tab='sink'">🗑️ {{ __('harnessTabSink') }}</button>
+      <button :class="['tab-btn', tab==='habits'&&'active']" @click="tab='habits'">🧠 习惯</button>
       <button :class="['tab-btn', tab==='rules'&&'active']" @click="tab='rules'">🛡️ 规则引擎</button>
-      <button :class="['tab-btn', tab==='constitution'&&'active']" @click="tab='constitution'" style="border-color:rgba(139,92,246,0.3);color:#a78bfa">📜 宪法检查</button>
       <button :class="['tab-btn', tab==='proposal'&&'active']" @click="tab='proposal'">📋 提案系统</button>
-    </div>
-
-    <div v-if="tab==='constitution'" class="tab-content">>
-      <div class="settings-section">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <h3>📜 宪法检查</h3>
-          <div style="display:flex;gap:8px;align-items:center">
-            <select v-model="conRuleId" style="padding:4px 8px;border-radius:4px;background:var(--bg2);border:1px solid var(--border);color:var(--fg);font-size:12px">
-              <option value="*">全部宪章</option>
-              <option v-for="r in conRuleList" :key="r.id" :value="r.id">{{ r.name || r.id }}</option>
-            </select>
-            <button class="refresh-btn" @click="runConCheck" :disabled="conChecking" style="background:rgba(139,92,246,0.2);border-color:#8b5cf6;color:#a78bfa">
-              {{ conChecking ? '检查中...' : '🔍 运行宪法检查' }}
-            </button>
-          </div>
-        </div>
-
-        <div v-if="conResult" style="margin-top:12px">
-          <div :style="{padding:'8px 12px',borderRadius:'6px',marginBottom:'8px',fontSize:'13px',fontWeight:600,background:conResult.passed ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)',color:conResult.passed ? '#22c55e' : '#eab308'}">
-            {{ conResult.passed ? '✅ 全部通过' : '⚠️ 发现违规' }}
-            <span style="font-weight:400;font-size:11px;margin-left:8px;color:var(--fg3)">
-              违规 {{ (conResult.violations||[]).length }} 条
-            </span>
-          </div>
-
-          <div v-if="conResult.report" style="font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--bg2);padding:12px;border-radius:6px;font-family:monospace">
-            {{ conResult.report }}
-          </div>
-        </div>
-      </div>
     </div>
 
     <div v-if="tab==='overview'" class="tab-content">
@@ -411,51 +381,115 @@
       </div>
     
 
-    
-
-</div>
-    <div v-if="tab==='alerts'" class="tab-content">
+    <div v-if="tab==='habits'" class="tab-content">
       <div class="settings-section">
-        <h3>⚠️ {{ __('harnessAlerts') }}</h3>
-        <div class="simple-gauges" style="margin-bottom:16px">
-          <div class="sg">
-            <div class="sg-val" style="font-size:20px;color:#ef4444">{{ (m.activeAlerts||[]).length }}</div>
-            <div class="sg-lbl">{{ __('harnessActiveAlerts') }}</div>
-          </div>
-          <div class="sg">
-            <div class="sg-val" style="font-size:20px;color:#6b7280">{{ m.alertsTotal || 0 }}</div>
-            <div class="sg-lbl">{{ __('harnessTotalAlerts') }}</div>
-          </div>
-          <div class="sg">
-            <div class="sg-val" style="font-size:20px;color:#3b82f6">{{ (m.activeAlerts||[]).filter(function(a){return !a.acknowledged;}).length }}</div>
-            <div class="sg-lbl">{{ __('harnessUnread') }}</div>
-          </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button @click="habTab='analyze'" :class="{active:habTab==='analyze'}" class="btn btn-ghost" style="font-size:12px;padding:4px 12px">📊 趋势分析</button>
+          <button @click="habTab='pending'" :class="{active:habTab==='pending'}" class="btn btn-ghost" style="font-size:12px;padding:4px 12px">
+            ⏳ 待确认 <span v-if="pendingList.length" style="background:var(--accent);color:#fff;border-radius:10px;padding:0 6px;font-size:10px;margin-left:4px">{{ pendingList.length }}</span>
+          </button>
+          <button @click="habTab='confirmed'" :class="{active:habTab==='confirmed'}" class="btn btn-ghost" style="font-size:12px;padding:4px 12px">✅ 已确认偏好</button>
+          <button @click="habTab='record'" :class="{active:habTab==='record'}" class="btn btn-ghost" style="font-size:12px;padding:4px 12px">✏️ 手动记录</button>
+          <button @click="generateConfirmations" class="btn btn-primary" style="margin-left:auto;font-size:11px">🤖 AI 推测偏好</button>
         </div>
-        <div v-if="m.activeAlerts && m.activeAlerts.length > 0" style="display:flex;flex-direction:column;gap:8px">
-          <div v-for="(a,i) in m.activeAlerts" :key="i" style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;font-size:12px;transition:all .2s" :style="{background:a.acknowledged?'rgba(107,114,128,0.05)':'rgba(59,130,246,0.08)',border:'1px solid '+(a.acknowledged?'rgba(107,114,128,0.15)':'rgba(59,130,246,0.2)'),opacity:a.acknowledged?.6:1}">
-            <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px" :style="{background:a.type==='high_error_rate'?'#ef4444':a.type==='high_latency'?'#eab308':a.type==='token_burst'?'#a855f7':'#3b82f6'}"></div>
-            <div style="flex:1;min-width:0">
-              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-                <span style="padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600" :style="{background:a.type==='high_error_rate'?'rgba(239,68,68,0.15)':a.type==='high_latency'?'rgba(234,179,8,0.15)':a.type==='token_burst'?'rgba(168,85,247,0.15)':'rgba(59,130,246,0.15)',color:a.type==='high_error_rate'?'#ef4444':a.type==='high_latency'?'#eab308':a.type==='token_burst'?'#a855f7':'#3b82f6'}">{{ a.type.replace(/_/g,' ') }}</span>
-                <span v-if="a.severity" style="padding:1px 6px;border-radius:3px;font-size:10px" :style="{background:a.severity==='high'?'rgba(239,68,68,0.1)':a.severity==='warning'?'rgba(234,179,8,0.1)':'rgba(107,114,128,0.1)',color:a.severity==='high'?'#ef4444':a.severity==='warning'?'#eab308':'#6b7280'}">{{ a.severity }}</span>
-                <span style="font-size:10px;color:var(--fg3);margin-left:auto">{{ a.ts ? new Date(a.ts).toLocaleString() : "" }}</span>
-              </div>
-              <div v-if="a.data && a.data.message" style="margin-top:4px;color:var(--fg)">{{ a.data.message }}</div>
-              <div v-else-if="a.data" style="margin-top:4px;color:var(--fg3);font-size:11px"><code>{{ JSON.stringify(a.data).substring(0,200) }}</code></div>
-              <div v-if="a.acknowledgedAt" style="margin-top:4px;font-size:10px;color:var(--fg3)">✅ {{ __('harnessAcknowledged') }} {{ a.acknowledgedAt ? new Date(a.acknowledgedAt).toLocaleString() : "" }}</div>
+
+        <div v-if="habTab==='analyze'">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 style="margin:0;font-size:14px">📊 习惯趋势（带记忆衰减）</h3>
+            <button @click="loadAnalysis" class="btn btn-ghost" style="font-size:11px">🔄 刷新</button>
+          </div>
+          <div v-if="!analysis" style="text-align:center;padding:24px;color:var(--fg3);font-size:13px">
+            <p>点击「AI 推测偏好」或加载趋势数据</p>
+            <button @click="loadAnalysis" class="btn btn-primary" style="margin-top:8px">📊 加载趋势</button>
+          </div>
+          <div v-else>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--fg3)">
+              <span>📊 总事件: {{ (analysis.analysis || {}).totalEvents || 0 }}</span>
+              <span>📅 分析范围: {{ (analysis.analysis || {}).daysAnalyzed || '-' }} 天</span>
+              <span>📈 活跃趋势: {{ ((analysis.analysis || {}).topTrends || []).length }} 条</span>
+              <span>✅ 已确认偏好: {{ (analysis.confirmedPreferences || []).length }} 条</span>
             </div>
-            <button v-if="!a.acknowledged && !a.acknowledgedAt" class="refresh-btn" @click="ackAlert(i)" style="flex-shrink:0;font-size:10px;padding:3px 10px;color:#22c55e;border-color:#22c55e">✓ {{ __('harnessAck') }}</button>
+            <div v-for="t in ((analysis.analysis || {}).topTrends || [])" :key="t.action" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                  <span :style="{fontSize:'10px',padding:'1px 6px',borderRadius:'4px',marginRight:'6px',fontWeight:600,color:catColor(t.category)}">{{ catLabel(t.category) }}</span>
+                  <span style="font-weight:500;font-size:13px">{{ t.action }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--fg3)">
+                  <span>频次: {{ t.frequency }}</span>
+                  <span>权重: {{ t.weightedScore }}</span>
+                  <span v-if="t.lastSeenDaysAgo <= 7" style="color:#22c55e">🔥 活跃</span>
+                  <span v-else-if="t.lastSeenDaysAgo <= 30" style="color:#eab308">🌙 近月</span>
+                  <span v-else style="color:var(--fg3)">💤 衰减</span>
+                </div>
+              </div>
+              <div v-if="(t.samples || []).length" style="font-size:11px;color:var(--fg3);margin-top:2px">
+                💡 {{ t.samples.join(' · ') }}
+              </div>
+            </div>
           </div>
         </div>
-        <div v-else class="empty" style="text-align:center;padding:40px 16px">
-          <div style="font-size:36px;margin-bottom:8px">✅</div>
-          <div style="font-size:14px;font-weight:500">{{ __('harnessNoActiveAlerts') }}</div>
-          <div style="font-size:11px;color:var(--fg3);margin-top:4px">{{ __('harnessAlertsDesc') }}</div>
+
+        <div v-if="habTab==='pending'">
+          <h3 style="font-size:14px;margin-bottom:12px">⏳ 待确认的偏好推测 ({{ pendingList.length }})</h3>
+          <div v-if="!pendingList.length" style="text-align:center;padding:24px;color:var(--fg3);font-size:13px">
+            <p>暂无待确认的偏好推测</p>
+            <button @click="generateConfirmations" class="btn btn-primary">🤖 让 AI 分析偏好</button>
+          </div>
+          <div v-for="p in pendingList" :key="p.id" style="margin-bottom:12px;padding:12px;border:1px solid var(--border);border-radius:8px">
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+              <div style="flex:1">
+                <div style="font-weight:500;font-size:13px">{{ p.inferredLabel }}</div>
+                <div style="font-size:11px;color:var(--fg3);margin-top:4px">
+                  置信度: {{ Math.round((p.confidence || 0) * 100) }}% · 
+                  出现 {{ ((p.evidence || {}).occurrences || 0) }} 次 · 
+                  加权分 {{ ((p.evidence || {}).weightedScore || 0) }}
+                </div>
+                <div v-if="((p.evidence || {}).samples || []).length" style="font-size:11px;color:var(--fg2);margin-top:4px">
+                  样本: {{ (p.evidence.samples || []).join(' · ') }}
+                </div>
+              </div>
+              <div style="display:flex;gap:4px;flex-shrink:0">
+                <button @click="confirmPreference(p.id, true, '')" style="font-size:11px;padding:4px 10px;background:rgba(34,197,94,0.2);color:#22c55e;border:1px solid #22c55e;border-radius:4px;cursor:pointer">✅ 确认</button>
+                <button @click="rejectPreference(p.id)" style="font-size:11px;padding:4px 10px;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid #ef4444;border-radius:4px;cursor:pointer">❌ 拒绝</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="habTab==='confirmed'">
+          <h3 style="font-size:14px;margin-bottom:12px">✅ 已确认的偏好 ({{ confirmedList.length }})</h3>
+          <div v-if="!confirmedList.length" style="text-align:center;padding:24px;color:var(--fg3);font-size:13px">暂无已确认的偏好</div>
+          <div v-for="p in confirmedList" :key="p.id" style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px">
+            <div>{{ p.inferredLabel }}</div>
+            <div style="font-size:11px;color:var(--fg3)">
+              置信度: {{ Math.round((p.confidence || 0) * 100) }}% · 
+              {{ new Date(p.confirmedAt).toLocaleDateString() }} 确认
+              <span v-if="p.note"> · 备注: {{ p.note }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="habTab==='record'">
+          <h3 style="font-size:14px;margin-bottom:12px">✏️ 手动记录一条习惯</h3>
+          <div style="display:flex;flex-direction:column;gap:8px;max-width:500px">
+            <select v-model="recordForm.category" style="padding:8px;border-radius:6px;background:var(--bg2);color:var(--fg);border:1px solid var(--border)">
+              <option value="command">命令习惯</option>
+              <option value="preference">日常偏好</option>
+              <option value="format">格式风格</option>
+              <option value="report">报表偏好</option>
+              <option value="workflow">工作流程</option>
+            </select>
+            <input v-model="recordForm.action" placeholder="行为描述（如 prefer_concise）" style="padding:8px;border-radius:6px;background:var(--bg2);color:var(--fg);border:1px solid var(--border)">
+            <input v-model="recordForm.detail" placeholder="详情（可选）" style="padding:8px;border-radius:6px;background:var(--bg2);color:var(--fg);border:1px solid var(--border)">
+            <button @click="manualRecord" :disabled="!recordForm.action" class="btn btn-primary" style="align-self:flex-start">✏️ 记录</button>
+            <div v-if="recordMsg" style="font-size:12px;color:#22c55e">{{ recordMsg }}</div>
+          </div>
         </div>
       </div>
     </div>
 
-
+</div>
 
 </template>
 
@@ -464,19 +498,15 @@ import { API } from '../main.js'
 export default {
   data() {
     return {
-      m: {}, s: {}, err: { breakdown: [] }, health: { completionRate: 0 }, rules: { rules: [], total: 0, stats: { byStatus: {}, byType: {} } }, proposal: { proposals: [], total: 0, stats: {}, pendingAppeals: [], audit: [] }, ruleForm: { show: false, type: 'compliance', name: '', condition: '', action: 'warn', reason: '', severity: 'medium' }, propResult: null, conRuleId: '*', conRuleList: [], conResult: null, conDetails: null, conChecking: false, showConDetails: false, habTab: 'analyze', analysis: null, pendingList: [], confirmedList: [], recordForm: { category: 'command', action: '', detail: '' }, recordMsg: '',
+      m: {}, s: {}, err: { breakdown: [] }, health: { completionRate: 0 }, rules: { rules: [], total: 0, stats: { byStatus: {}, byType: {} } }, proposal: { proposals: [], total: 0, stats: {}, pendingAppeals: [], audit: [] }, ruleForm: { show: false, type: 'compliance', name: '', condition: '', action: 'warn', reason: '', severity: 'medium' }, propResult: null, habTab: 'analyze', analysis: null, pendingList: [], confirmedList: [], recordForm: { category: 'command', action: '', detail: '' }, recordMsg: '',
       lb: { rankings: [] }, kr: { summary: {}, features: [], dailyTrend: [] }, errs: { totalCases: 0, openCases: 0, recentCases: [] }, errorTrend: { trend: [] }, genTickets: { loading: false, result: null }, slaStats: { totalCalls: 0, p50: 0, p75: 0, p90: 0, p95: 0, p99: 0, avgLatency: 0, latencyDistribution: {} },
       tab: 'overview', connected: false,
-      lastUpdate: '-', ws: null, rt: null, loading: false
+      lastUpdate: '-', ws: null, rt: null
     }
   },
   mounted() {
     this.fetchAll()
     this.connectWS()
-    // 加载宪章规则列表
-    API.get('/api/harness/rules?type=constitutional').then(function(d){
-      if (d.rules) this.conRuleList = d.rules;
-    }.bind(this)).catch(function(){});
   },
   beforeDestroy() {
     if (this.ws) this.ws.close()
@@ -484,7 +514,6 @@ export default {
   },
   methods: {
     async fetchAll() {
-      this.loading = true
       try {
         const r = await Promise.all([
           API.get('/api/harness/metrics'), API.get('/api/harness/scheduler'),
@@ -500,7 +529,7 @@ export default {
           API.get('/api/harness/proposal/appeals/pending'),
           API.get('/api/harness/proposal/audit?limit=20')
         ])
-        this.m = r[0]||{}; this.m.alertsTotal = (this.m.activeAlerts||[]).length; this.s = r[1]||{}; this.err = r[2]||{breakdown:[]};
+        this.m = r[0]||{}; this.s = r[1]||{}; this.err = r[2]||{breakdown:[]};
         var rRulesStats = r[10]||{}; var rRules = r[11]||{}; var rPropStats = r[12]||{}; var rPropAppeals = r[13]||{}; var rPropAudit = r[14]||{};
         this.rules = { stats: rRulesStats, total: rRules.total || 0, rules: (rRules.rules || []).filter(function(x){return x.status!=='deprecated';}) };
         this.proposal = { stats: rPropStats, pendingAppeals: rPropAppeals.pending || [], audit: (rPropAudit.audit || []).slice(0, 20) };
@@ -521,7 +550,7 @@ export default {
         this.errs.byLevel = es.byLevel || {};
         this.errs.recentCases = (es.recentCases || []).slice(0, 8);
         this.lastUpdate = new Date().toLocaleTimeString()
-      } catch(e) {} finally { this.loading = false; }
+      } catch(e) {}
     },
     async createErrorTickets() {
       this.genTickets.loading = true
@@ -551,24 +580,6 @@ export default {
     async rejectRule(ruleId) {
       try { await API.post('/api/harness/rules/' + ruleId + '/reject', { rejectedBy: 'admin', reason: '前端驳回' }); this.fetchAll(); } catch(e) {}
     },
-    async runConCheck() {
-      this.conChecking = true;
-      this.conResult = null;
-      this.conDetails = null;
-      this.showConDetails = false;
-      try {
-        const d = await API.get('/api/harness/constitution/check?rule=' + encodeURIComponent(this.conRuleId));
-        this.conResult = d;
-        this.conDetails = d.details || d;
-        if (!this.conRuleList.length && d.rules) {
-          this.conRuleList = d.rules;
-        }
-      } catch(e) {
-        this.conResult = { ok: false, passed: false, violations: [{ ruleId: 'error', message: e.message, severity: 'error' }], report: '请求失败: ' + e.message };
-        this.conDetails = null;
-      }
-      this.conChecking = false;
-    },
     async reviewAppeal(proposalId, decision) {
       try { await API.post('/api/harness/proposal/' + proposalId + '/review', { reviewer: 'admin', role: 'vp', decision: decision, note: '前端操作' }); this.fetchAll(); } catch(e) {}
     },
@@ -590,21 +601,6 @@ connectWS() {
         this.ws.onclose = () => { this.connected = false; this.wsRetry = (this.wsRetry||0) + 1; this.rt = setTimeout(() => this.connectWS(), Math.min(30000, this.wsRetry * 5000)) }
         this.ws.onerror = () => { this.connected = false }
       } catch(e) {}
-    }
-,
-
-    async ackAlert(idx) {
-      var alert = this.m.activeAlerts && this.m.activeAlerts[idx];
-      if (!alert) return;
-      try {
-        await API.post('/api/harness/alerts/ack', { alertId: alert.id || alert._id || idx });
-        alert.acknowledged = true;
-        alert.acknowledgedAt = new Date().toISOString();
-      } catch(e) {
-        console.error('Failed to ack alert:', e);
-        alert.acknowledged = true;
-        alert.acknowledgedAt = new Date().toISOString();
-      }
     }
   }
 }

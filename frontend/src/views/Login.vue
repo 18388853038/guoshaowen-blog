@@ -11,18 +11,17 @@
         <h1>🏢 eCompany</h1>
         <div class="error">{{ error }}</div>
         <input type="password" v-model="token" placeholder="输入访问令牌..." @keyup.enter="login" autofocus>
-        <button @click="login">🔑 {{ __('loginEnter') }}</button>
+        <button @click="login">🔑 进入系统</button>
       </div>
       <div class="login-box" v-else>
         <div class="spinner"></div>
-        <p>{{ __('loginAuto') }}...</p>
+        <p>自动登录中...</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { __ } from '../i18n'
 import { API } from '../main.js'
 export default {
   data() { return {
@@ -43,11 +42,11 @@ export default {
     updateTime() {
       const now = new Date()
       const h = now.getHours()
-      if (h < 6) this.greeting = this.__('loginLateNight')
-      else if (h < 12) this.greeting = this.__('loginMorning')
-      else if (h < 14) this.greeting = this.__('loginNoon')
-      else if (h < 18) this.greeting = this.__('loginAfternoon')
-      else this.greeting = this.__('loginEvening')
+      if (h < 6) this.greeting = '夜深了，老板'
+      else if (h < 12) this.greeting = '早上好，老板'
+      else if (h < 14) this.greeting = '中午好，老板'
+      else if (h < 18) this.greeting = '下午好，老板'
+      else this.greeting = '晚上好，老板'
       this.timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
       this.dateStr = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })
     },
@@ -106,21 +105,21 @@ export default {
     async autoLogin() {
       try {
         const r = await API.get('/api/auth/me')
-        if (r.ok && r.loggedIn) {
-          this.$router.push('/chat')
+        if (r.ok) {
+          this.$router.push('/dashboard')
           return
         }
       } catch(e) {}
       this.showLogin = true
     },
     async login() {
-      if (!this.token) { this.error = this.__('loginTokenPlaceholder'); return }
+      if (!this.token) { this.error = '请输入令牌'; return }
       const r = await API.post('/api/auth/login', { password: this.token })
       if (r.ok && r.token) {
         API.setToken(r.token)
-        this.$router.push('/chat')
+        this.$router.push('/dashboard')
       } else {
-        this.error = r.error || this.__('loginTokenInvalid')
+        this.error = r.error || '令牌无效'
       }
     }
   }

@@ -1,8 +1,9 @@
-import { createApp, reactive } from 'vue'
-import { t as __t, setLang as __setLang, getLang as __getLang, i18n } from './i18n.js'
+﻿import { createApp, reactive } from 'vue'
+import { t as __t, setLang as __setLang, getLang as __getLang } from './i18n.js'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import './assets/style.css'
+
 export const API = reactive({
   base: '',
   token: localStorage.getItem('token') || '',
@@ -37,29 +38,40 @@ export const API = reactive({
     else localStorage.removeItem('token')
   }
 })
-window.API = API
+
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: () => import('./views/Login.vue') },
   { path: '/setup', component: () => import('./views/Setup.vue') },
+  { path: '/dashboard', component: () => import('./views/Dashboard.vue'), meta: { auth: true } },
+  { path: '/employees', component: () => import('./views/Employees.vue'), meta: { auth: true } },
   { path: '/chat', component: () => import('./views/Chat.vue'), meta: { auth: true } },
-  { path: '/skills', component: () => import('./views/SkillsPage.vue'), meta: { auth: true } },
-  { path: '/memory', component: () => import('./views/MemoryPage.vue'), meta: { auth: true } },
-  { path: '/channels', component: () => import('./views/ChannelsPage.vue'), meta: { auth: true } },
-  { path: '/auto-evolution', component: () => import('./views/AutoEvolutionPage.vue'), meta: { auth: true } },
-  { path: '/dashboard', component: () => import('./views/DashboardPage.vue'), meta: { auth: true } },
-  { path: '/loop-engine', component: () => import('./views/LoopPage.vue'), meta: { auth: true } },
-  { path: '/scheduler', component: () => import('./views/SchedulerPage.vue'), meta: { auth: true } },
-  { path: '/heartbeat', component: () => import('./views/HeartbeatPage.vue'), meta: { auth: true } },
+  { path: '/tasks', component: () => import('./views/Tasks.vue'), meta: { auth: true } },
   { path: '/profile', component: () => import('./views/Profile.vue'), meta: { auth: true } },
-  { path: '/files', component: () => import('./views/Files.vue'), meta: { auth: true } },
-  { path: '/harness', component: () => import('./views/Harness.vue'), meta: { auth: true } },
   { path: '/settings', component: () => import('./views/Settings.vue'), meta: { auth: true } },
+  { path: '/skills', component: () => import('./views/Skills.vue'), meta: { auth: true } },
+  { path: '/files', component: () => import('./views/Files.vue'), meta: { auth: true } },
+  { path: '/automation', component: () => import('./views/Automation.vue'), meta: { auth: true } },
+  { path: '/health', component: () => import('./views/Health.vue'), meta: { auth: true } },
+  { path: '/harness', component: () => import('./views/Harness.vue'), meta: { auth: true } },
+  { path: '/audit', component: () => import('./views/Audit.vue'), meta: { auth: true } },
   { path: '/boundary', component: () => import('./views/Boundary.vue'), meta: { auth: true } },
+  { path: '/dag', component: () => import('./views/DAGView.vue'), meta: { auth: true } },
+  { path: '/plugins', component: () => import('./views/Plugins.vue'), meta: { auth: true } },
+  { path: '/abtest', component: () => import('./views/ABTest.vue'), meta: { auth: true } },
+  { path: '/ceo', component: () => import('./views/CEOPermissions.vue'), meta: { auth: true } },
+  { path: '/file-permissions', component: () => import('./views/FilePermissions.vue'), meta: { auth: true } },
+  { path: '/memory', component: () => import('./views/Memory.vue'), meta: { auth: true } },
+  { path: '/habits', component: () => import('./views/Habits.vue'), meta: { auth: true } },
+  { path: '/workflows', component: () => import('./views/WorkflowEditor.vue'), meta: { auth: true } },
+  { path: '/mcp', component: () => import('./views/MCPManager.vue'), meta: { auth: true } },
 ]
+
 const router = createRouter({ history: createWebHistory(), routes })
+
 import { translateDOM } from './i18n.js'
 router.afterEach(function() { setTimeout(translateDOM, 300); });
+
 // First-run redirect: check setup status
 var _setupChecked = false;
 var _tokenValidated = false;
@@ -90,48 +102,14 @@ router.beforeEach(function(to, from, next) {
   }
   next();
 });
-const app = createApp(App)
-const __map = {
-  navLogout:'nav.logout',navCore:'nav.core',navSystem:'nav.system',
-  appSub:'app.sub',appVersion:'app.version',
-  chatSend:'chat.send',chatPlaceholder:'chat.placeholder',chatThinking:'chat.thinking',chatSelectAgent:'chat.selectAgent',
-  chatSearch:'chat.search',chatNoMatch:'chat.noMatch',chatUploadFile:'chat.uploadFile',chatVoiceInput:'chat.voiceInput',
-  chatActivity:'chat.activity',chatCollapse:'chat.collapse',chatWaitingActivity:'chat.waitingActivity',chatStopRecording:'chat.stopRecording',chatFileUnit:'chat.fileUnit',
-  setupTitle:'setup.title',setupWelcome:'setup.welcome',setupDesc:'setup.desc',setupStep1:'setup.step1',
-  setupStep2:'setup.step2',setupStep3:'setup.step3',setupStep4:'setup.step4',setupNext:'setup.next',setupPrev:'setup.prev',
-  setupFinish:'setup.finish',setupConfigureProvider:'setup.configureProvider',setupEnterApiKey:'setup.enterApiKey',
-  setupEnterName:'setup.enterName',setupEnterTitle:'setup.enterTitle',setupEnterEmail:'setup.enterEmail',
-  setupSetupComplete:'setup.setupComplete',setupGotoDashboard:'setup.gotoDashboard',setupStartChat:'setup.startChat',
-  setupBrowseEmployees:'setup.browseEmployees',setupFeature1:'setup.feature1',setupFeature2:'setup.feature2',
-  setupFeature3:'setup.feature3',setupFeature4:'setup.feature4',
-  loading:'common.loading',status:'common.status',all:'common.all',search:'common.search',
-  name:'common.name',online:'common.online',offline:'common.offline',commonSave:'common.save',
-  noActivity:'common.noActivity',
-  // Dashboard
-  dashTitle:'dashboard.title',dashDesc:'dashboard.desc',dashLoadError:'message.error',
-  // Login
-  loginMorning:'time.morning',loginNoon:'time.noon',loginEvening:'time.evening',loginLateNight:'time.night',loginTokenInvalid:'auth.token',loginSub:'app.description',
-  // Skills
-  skillsTitle:'skills.title',skillsDesc:'skills.desc',skillsRefresh:'common.refresh',skillsEmployeeHeader:'skills.employee',skillsTotalCount:'dashboard.total',skillsUnit:'dashboard.unit',skillsOpenclawHeader:'skills.openclaw',skillsAvailableUnit:'skills.available',skillsToggleOn:'skills.enabled',skillsToggleOff:'skills.disabled',skillsNoResult:'common.noMatch',skillsSearchPlaceholder:'common.search',skillsOpFail:'message.error',
-  // Auto Evolution
-  autoEvoTitle:'autoEvo.title',autoEvoDesc:'autoEvo.desc',autoEvoRunning:'autoEvo.running',autoEvoRunOnce:'autoEvo.runOnce',autoEvoStats:'autoEvo.stats',autoEvoTotalCycles:'autoEvo.totalCycles',autoEvoIssuesFound:'autoEvo.issuesFound',autoEvoFixed:'autoEvo.fixed',autoEvoPromoted:'autoEvo.promoted',autoEvoFixRate:'autoEvo.fixRate',autoEvoCleanCycles:'autoEvo.cleanCycles',autoEvoRecentResults:'autoEvo.recentResults',autoEvoRecentRecords:'autoEvo.recentRecords',autoEvoNoRecords:'autoEvo.noRecords',autoEvoComplete:'autoEvo.complete',autoEvoFailed:'autoEvo.failed',autoEvoNeverRun:'autoEvo.neverRun',autoEvoJustRun:'autoEvo.justRun',autoEvoMinAgo:'autoEvo.minAgo',autoEvoStatsFail:'autoEvo.statsFail',autoEvoNetErr:'message.error',autoEvoHistoryFail:'autoEvo.historyFail',autoEvoRunFail:'autoEvo.runFail',
-  // Heartbeat
-  heartbeatTitle:'heartbeat.title',heartbeatDesc:'heartbeat.desc',heartbeatInterval:'heartbeat.interval',heartbeatMinutes:'heartbeat.minutes',heartbeatBeatInterval:'heartbeat.beatInterval',heartbeatMonitorStatus:'heartbeat.monitorStatus',heartbeatNoChannel:'heartbeat.noChannel',heartbeatSysStatus:'heartbeat.sysStatus',heartbeatSaveConfig:'heartbeat.saveConfig',heartbeatSaving:'heartbeat.saving',heartbeatOnline:'heartbeat.online',heartbeatOffline:'heartbeat.offline',heartbeatWaitCred:'heartbeat.waiting',heartbeatConfig:'heartbeat.config',
-  // Memory
-  memoryTitle:'memory.title',memoryDesc:'memory.desc',memoryCoreTab:'memory.coreTab',memoryKbTab:'memory.kbTab',memoryFilterAll:'memory.filterAll',memoryNoMatch:'common.noMatch',memoryLoading:'common.loading',memoryNewEntry:'memory.newEntry',memoryEditForm:'memory.editForm',memorySave:'memory.save',memoryCancel:'memory.cancel',memorySearchResult:'memory.searchResult',memoryEdit:'common.edit',memoryDelete:'common.delete',memoryNoKb:'memory.noKb',memoryPriorityHigh:'memory.priorityHigh',memoryPriorityMedium:'memory.priorityMedium',memoryPriorityLow:'memory.priorityLow',memoryConfirmDel:'memory.confirmDel',memoryTagsPlaceholder:'memory.tagsPlaceholder',
-  // Scheduler
-  schedulerTitle:'scheduler.title',schedulerDesc:'scheduler.desc',schedulerNewJob:'scheduler.newJob',schedulerRefresh:'common.refresh',schedulerCronExpr:'scheduler.cronExpr',schedulerTarget:'scheduler.target',schedulerActions:'scheduler.actions',schedulerRun:'scheduler.run',schedulerEdit:'common.edit',schedulerDelete:'common.delete',schedulerEnable:'scheduler.enable',schedulerDisable:'scheduler.disable',schedulerNoJobs:'scheduler.noJobs',schedulerHint:'scheduler.hint',schedulerHintText:'scheduler.hintText',schedulerEnabled:'scheduler.enabled',schedulerPaused:'scheduler.paused',schedulerSoon:'scheduler.soon',
-  // Workflow
-  workflowTitle:'workflow.title',workflowDesc:'workflow.desc',workflowNew:'workflow.new',workflowList:'workflow.list',workflowNoItems:'workflow.noItems',workflowTypeTask:'workflow.typeTask',workflowTypeParallel:'workflow.typeParallel',workflowTypeCondition:'workflow.typeCondition',workflowTypeNotify:'workflow.typeNotify',workflowValidate:'workflow.validate',workflowStart:'workflow.start',workflowNode:'workflow.node',workflowStatusDraft:'workflow.statusDraft',workflowStatusActive:'workflow.statusActive',workflowStatusRunning:'workflow.statusRunning',workflowStatusDone:'workflow.statusDone',workflowStatusFailed:'workflow.statusFailed',workflowNewName:'workflow.newName',workflowConfirmDel:'workflow.confirmDel',workflowStarted:'workflow.started',workflowExecFail:'workflow.execFail',workflowSave:'workflow.save',workflowSaveFail:'workflow.saveFail',
-  // Channels
-  channelsTitle:'channels.title',channelsDesc:'channels.desc',channelsWechat:'channels.wechat',channelsFeishu:'channels.feishu',channelsWecom:'channels.wecom',channelsPersonalWx:'channels.personalWx',channelsConnect:'channels.connect',channelsConfig:'channels.config',channelsUnknownErr:'message.error',channelsBuiltin:'channels.builtin',channelsApiInterface:'channels.apiInterface',channelsQrDesc:'channels.qrDesc',channelsQqQrDesc:'channels.qqQrDesc',channelsDisconnect:'channels.disconnect',channelsConnecting:'channels.connecting',
-  online:'common.online',};
 
+const app = createApp(App)
+const __map = {navDashboard:'nav.dashboard',navChat:'nav.chat',navEmployees:'nav.employees',navTasks:'nav.tasks',navProfile:'nav.profile',navSettings:'nav.settings',navSkills:'nav.skills',navFiles:'nav.files',navAutomation:'nav.automation',navHealth:'nav.health',navHarness:'nav.harness',navLogout:'nav.logout',navCore:'nav.core',navSystem:'nav.system',navAudit:'nav.audit',navBoundary:'nav.boundary',navDag:'nav.dag',navPlugins:'nav.plugins',navAbtest:'nav.abtest',dashboardTitle:'dashboard.title',dashboardTagline:'dashboard.tagline',dashboardEmployees:'dashboard.employees',dashboardOnline:'dashboard.online',dashboardTasks:'dashboard.tasks',dashboardDone:'dashboard.done',dashboardServerRunning:'dashboard.serverRunning',dashboardServerError:'dashboard.serverError',dashboardRunning:'dashboard.uptime',dashboardPending:'dashboard.pending',dashboardCeoStatus:'dashboard.ceoStatus',dashboardCeoOnline:'dashboard.ceoOnline',dashboardCeoOffline:'dashboard.ceoOffline',dashboardTraffic:'dashboard.traffic',dashboardTotal:'dashboard.total',dashboardSuccess:'dashboard.success',dashboardFailed:'dashboard.failed',dashboardInputTokens:'dashboard.inputTokens',dashboardOutputTokens:'dashboard.outputTokens',dashboardCost:'dashboard.cost',dashboardChannels:'dashboard.channels',dashboardCoreValues:'dashboard.coreValues',dashboardCoreTeam:'dashboard.coreTeam',dashboardStatus:'dashboard.status',dashboardSkills:'dashboard.skills',channelConnected:'channel.connected',channelDisconnected:'channel.disconnected',channelChecking:'channel.checking',channelConfigure:'channel.configure',channelSetup:'channel.setup',channelGuide:'channel.guide',appSub:'app.sub',appVersion:'app.version',empCount:'app.sub',all:'common.all',search:'common.search',status:'common.status',name:'common.name',online:'common.online',offline:'common.offline',loading:'common.loading',valueCollaboration:'value.collaboration',valueIntelligence:'value.intelligence',valueSecurity:'value.security',valueEfficiency:'value.efficiency',noActivity:'common.noActivity',dashboardActivities:'dashboard.activities',dashboardQuickActions:'dashboard.quickActions',dashboardChatStart:'dashboard.chatStart',dashboardViewTasks:'dashboard.viewTasks',dashboardBrowseEmployees:'dashboard.browseEmployees',dashboardSystemSettings:'dashboard.systemSettings',chatSearch:'chat.search',chatNoMatch:'chat.noMatch',chatSend:'chat.send',chatPlaceholder:'chat.placeholder',chatThinking:'chat.thinking',chatSelectAgent:'chat.selectAgent',empScoreRank:'employee.scoreRank',empListView:'employee.listView',empName:'employee.name',empTitle:'employee.title',empScore:'employee.score',empDone:'employee.done',empTotal:'employee.total',empRate:'employee.rate',empScoreDesc:'employee.scoreDesc',healthServer:'health.server',healthUptime:'health.uptime',healthVersion:'health.version',healthMemory:'health.memory',healthDatabase:'health.database',fileMgr:'file.manager',fileDesc:'file.desc',fileNew:'file.new',fileRoot:'file.root',fileParent:'file.parent',fileFile:'file.file',fileFolder:'file.folder',fileCreateBtn:'file.create',fileCancel:'file.cancel',fileEmpty:'file.empty',fileClose:'file.close',fileConfirmDel:'file.confirmDel',fileDelWarn:'file.delWarn',settingsTitle:'settings.title',settingsDesc:'settings.desc',settingsAiModel:'settings.aiModel',settingsSelectProvider:'settings.selectProvider',settingsConfigured:'settings.configured',settingsNotConfigured:'settings.notConfigured',settingsTestConnection:'settings.testConnection',settingsTesting:'settings.testing',settingsConnectionOk:'settings.connectionOk',settingsConnectionFail:'settings.connectionFail',settingsModelConfig:'settings.modelConfig',settingsChannelConfig:'settings.channelConfig',settingsProviderKey:'settings.providerKey',settingsSaveConfig:'settings.saveConfig',settingsConfigSaved:'settings.configSaved',harnessTitle:'harness.title',harnessDesc:'harness.desc',harnessRealtime:'harness.realtime',harnessOffline:'harness.offline',harnessUpdated:'harness.updated',harnessRefresh:'harness.refresh',harnessTaskRate:'harness.taskRate',harnessTokenUsage:'harness.tokenUsage',harnessErrorRate:'harness.errorRate',harnessRetention:'harness.retention',harnessPendingCases:'harness.pendingCases',harnessAlerts:'harness.alerts',harnessTabOverview:'harness.tabOverview',harnessTabMetrics:'harness.tabMetrics',harnessTabErrors:'harness.tabErrors',harnessTabLeaderboard:'harness.tabLeaderboard',harnessTabCost:'harness.tabCost',harnessTabRetention:'harness.tabRetention',harnessTabSink:'harness.tabSink',harnessSystemHealth:'harness.systemHealth',harnessCompletionRate:'harness.completionRate',harnessErrorRateSmall:'harness.errorRateSmall',harnessRoundCalls:'harness.roundCalls',harnessFee:'harness.fee',harnessNoToolData:'harness.noToolData',harnessTool:'harness.tool',harnessCalls:'harness.calls',harnessErrors:'harness.errors',harnessErrorPct:'harness.errorPct',harnessLatency:'harness.latency',harnessErrorClassification:'harness.errorClassification',harnessType:'harness.type',harnessSeverity:'harness.severity',harnessCount:'harness.count',harnessRatio:'harness.ratio',harnessUnknownPending:'harness.unknownPending',harnessEmployeeRanking:'harness.employeeRanking',harnessRankFormula:'harness.rankFormula',harnessRank:'harness.rank',harnessName:'harness.name',harnessScore:'harness.score',harnessKeepRate:'harness.keepRate',harnessCostEstimate:'harness.costEstimate',harnessInputTokens:'harness.inputTokens',harnessOutputTokens:'harness.outputTokens',harnessTotalCost:'harness.totalCost',harnessRetentionEfficiency:'harness.retentionEfficiency',harnessRedoRate:'harness.redoRate',harnessTotalTasks:'harness.totalTasks',harnessCompleted:'harness.completed',harnessFailed:'harness.failed',harnessFeatureRanking:'harness.featureRanking',harnessNoUsageData:'harness.noUsageData',harnessDailyTrend:'harness.dailyTrend',harnessNoTrendData:'harness.noTrendData',harnessSinkCases:'harness.sinkCases',harnessTotalCases:'harness.totalCases',harnessOpenCases:'harness.openCases',harnessResolveRate:'harness.resolveRate',harnessRecentCases:'harness.recentCases',harnessNoCases:'harness.noCases',setupTitle:'setup.title',setupWelcome:'setup.welcome',setupDesc:'setup.desc',setupStep1:'setup.step1',setupStep2:'setup.step2',setupStep3:'setup.step3',setupStep4:'setup.step4',setupNext:'setup.next',setupPrev:'setup.prev',setupFinish:'setup.finish',setupConfigureProvider:'setup.configureProvider',setupEnterApiKey:'setup.enterApiKey',setupEnterName:'setup.enterName',setupEnterTitle:'setup.enterTitle',setupEnterEmail:'setup.enterEmail',setupSetupComplete:'setup.setupComplete',setupGotoDashboard:'setup.gotoDashboard',setupStartChat:'setup.startChat',setupBrowseEmployees:'setup.browseEmployees',setupFeature1:'setup.feature1',setupFeature2:'setup.feature2',setupFeature3:'setup.feature3',setupFeature4:'setup.feature4',automationTitle:'automation.title',automationDesc:'automation.desc',automationTaskName:'automation.taskName',automationSchedule:'automation.schedule',automationLastRun:'automation.lastRun',automationNextRun:'automation.nextRun',automationEnabled:'automation.enabled',automationDisabled:'automation.disabled',automationRunNow:'automation.runNow',profileTitle:'profile.title',profileInfo:'profile.info',profileName:'profile.name',profileTitle2:'profile.title2',profileEmail:'profile.email',profileBio:'profile.bio',profilePhone:'profile.phone',profileSave:'profile.save',profileSaved:'profile.saved',profileTheme:'profile.theme',profileLanguage:'profile.language',profileAccountInfo:'profile.accountInfo',profileDesc:'profile.desc',profileSaving:'profile.saving',profileContact:'profile.contact',profilePreferences:'profile.preferences',profileIcon:'profile.icon',profileEmojiHint:'profile.emojiHint',profileNameEn:'profile.nameEn',profileAdmin:'profile.admin',profileAdminFull:'profile.adminFull',profileCreatedAt:'profile.createdAt',profileSystemName:'profile.systemName',profileLicenseStatus:'profile.licenseStatus',profileLicenseLocal:'profile.licenseLocal',profileDevAccount:'profile.devAccount',profileDevAccountDesc:'profile.devAccountDesc',profileThemeDark:'profile.themeDark',profileThemeLight:'profile.themeLight',profileThemeAuto:'profile.themeAuto',profileBioPlaceholder:'profile.bioPlaceholder',tasksTitle:'tasks.title',tasksNewTask:'tasks.newTask',tasksTaskTitle:'tasks.taskTitle',tasksDescription:'tasks.description',tasksAssignee:'tasks.assignee',tasksPriority:'tasks.priority',tasksDeadline:'tasks.deadline',tasksStatus:'tasks.status',tasksCreated:'tasks.created',tasksInProgress:'tasks.inProgress',tasksCompleted:'tasks.completed',tasksNoTasks:'tasks.noTasks',tasksCreate:'tasks.create',tasksCancel:'tasks.cancel',tasksEdit:'tasks.edit',tasksPriorityHigh:'tasks.priorityHigh',tasksPriorityMedium:'tasks.priorityMedium',tasksPriorityLow:'tasks.priorityLow',tasksStatusTodo:'tasks.statusTodo',tasksStatusInProgress:'tasks.statusInProgress',tasksStatusDone:'tasks.statusDone',tasksStatusCancelled:'tasks.statusCancelled',tasksUnassigned:'tasks.unassigned',commonSave:'common.save',boundaryTitle:'boundary.title',boundaryDesc:'boundary.desc',boundaryGlobalLimits:'boundary.globalLimits',boundaryPerMinute:'boundary.perMinute',boundaryPerHour:'boundary.perHour',boundaryPerDay:'boundary.perDay',boundarySaveLimits:'boundary.saveLimits',boundaryToolLimits:'boundary.toolLimits',boundaryAddTool:'boundary.addTool',boundaryAgentList:'boundary.agentList',boundaryRole:'boundary.role',boundaryCalls:'boundary.calls',boundaryLimits:'boundary.limits',boundaryEdit:'boundary.edit',boundaryCustomLimits:'boundary.customLimits',boundaryBlockedTools:'boundary.blockedTools',boundarySave:'boundary.save',boundaryCancel:'boundary.cancel',boundaryRecentViolations:'boundary.recentViolations',boundaryNoViolations:'boundary.noViolations',boundaryViolations:'boundary.violations',boundaryRefresh:'boundary.refresh',boundaryTimesMinute:'boundary.timesMinute',boundaryTimesHour:'boundary.timesHour',boundaryTimesDay:'boundary.timesDay',boundaryToolName:'boundary.toolName',boundaryAgentName:'boundary.agentName',boundaryAction:'boundary.action',boundaryUseDefault:'boundary.useDefault',boundaryLoadingAgents:'boundary.loadingAgents',boundaryEditTitle:'boundary.editTitle',boundaryGlobal:'boundary.global',boundaryTaskQuota:'boundary.taskQuota',boundaryMaxTasks:'boundary.maxTasks',boundaryDailyTasks:'boundary.dailyTasks',boundaryUnlimited:'boundary.unlimited',employeesTitle:'employees.title',employeesAll:'employees.all',employeesOnline:'employees.online',employeesOffline:'employees.offline',employeesSearch:'employees.search',employeesNoMatch:'employees.noMatch',employeesScoreRank:'employees.scoreRank',employeesListView:'employees.listView',employeesScoreRanking:'employees.scoreRanking',employeesNoScoreData:'employees.noScoreData',employeesScoreDist:'employees.scoreDist',employeesPerson:'employees.person',employeesReportsTo:'employees.reportsTo',employeesChat:'employees.chat',employeesSkills:'employees.skills',employeesRadar:'employees.radar',chatUploadFile:'chat.uploadFile',chatVoiceInput:'chat.voiceInput',chatActivity:'chat.activity',chatCollapse:'chat.collapse',chatWaitingActivity:'chat.waitingActivity',chatStopRecording:'chat.stopRecording',chatFileUnit:'chat.fileUnit',healthTitle:'health.title',healthStatus:'health.status',healthRunning:'health.running',healthError:'health.error',healthDesc:'health.desc',healthTodayRequests:'health.todayRequests',healthLicenseStatus:'health.licenseStatus',healthCurrentTier:'health.currentTier',healthValid:'health.valid',healthInvalid:'health.invalid',healthMessage:'health.message',healthTrafficTitle:'health.trafficTitle',healthApiTotal:'health.apiTotal',healthSuccess:'health.success',healthFailed:'health.failed',healthInputTokens:'health.inputTokens',healthOutputTokens:'health.outputTokens',healthCost:'health.cost',healthSystemResources:'health.systemResources',healthMemoryUsage:'health.memoryUsage',healthApiRate:'health.apiRate',healthPerMin:'health.perMin',healthAgentCount:'health.agentCount',healthTaskCount:'health.taskCount',healthSuccessRate:'health.successRate',healthRefresh:'health.refresh',healthDeepCheck:'health.deepCheck',abtestTitle:'abtest.title',abtestDesc:'abtest.desc',abtestNewExperiment:'abtest.newExperiment',abtestExperimentName:'abtest.experimentName',abtestVariantA:'abtest.variantA',abtestVariantB:'abtest.variantB',abtestTrafficSplit:'abtest.trafficSplit',abtestActivate:'abtest.activate',abtestConclude:'abtest.conclude',abtestChooseWinner:'abtest.chooseWinner',abtestDraft:'abtest.draft',abtestRunning:'abtest.running',abtestConcluded:'abtest.concluded',abtestNoExperiments:'abtest.noExperiments',abtestExperiments:'abtest.experiments',abtestRefresh:'abtest.refresh',abtestNewExperimentTitle:'abtest.newExperimentTitle',abtestNamePlaceholder:'abtest.namePlaceholder',abtestModelName:'abtest.modelName',abtestCreate:'abtest.create',abtestCancel:'abtest.cancel',abtestCreated:'abtest.created',abtestActivated:'abtest.activated',abtestWinner:'abtest.winner',abtestVariant:'abtest.variant',abtestCalls:'abtest.calls',abtestSuccessRate:'abtest.successRate',abtestLatency:'abtest.latency',abtestChooseA:'abtest.chooseA',abtestChooseB:'abtest.chooseB',auditTitle:'audit.title',auditDesc:'audit.desc',auditAllActors:'audit.allActors',auditAllActions:'audit.allActions',auditFilterDate:'audit.filterDate',auditRefresh:'audit.refresh',auditNoRecords:'audit.noRecords',auditTotal:'audit.total',auditTarget:'audit.target',auditDetail:'audit.detail',auditPrevPage:'audit.prevPage',auditNextPage:'audit.nextPage',auditResult:'audit.result',auditScore:'audit.score',skillsTitle:'skills.title',skillsDesc:'skills.desc',skillsEnabled:'skills.enabled',skillsDisabled:'skills.disabled',skillsInstall:'skills.install',skillsNoSkills:'skills.noSkills',skillsInstallTitle:'skills.installTitle',skillsInstalling:'skills.installing',skillsUrlPlaceholder:'skills.urlPlaceholder',skillsBrowseMarket:'skills.browseMarket',dagTitle:'dag.title',dagDesc:'dag.desc',dagDagFlow:'dag.dagFlow',dagBlocked:'dag.blocked',dagCycle:'dag.cycle',dagRecalculate:'dag.recalculate',dagExecOrder:'dag.execOrder',dagNoData:'dag.noData',dagRefresh:'dag.refresh',dagTopoOrder:'dag.topoOrder',dagBlockedTasks:'dag.blockedTasks',dagWaitingFor:'dag.waitingFor',pluginsTitle:'plugins.title',pluginsDesc:'plugins.desc',pluginsLoaded:'plugins.loaded',pluginsCustomTools:'plugins.customTools',pluginsReload:'plugins.reload',pluginsEnable:'plugins.enable',pluginsDisable:'plugins.disable',pluginsTestExec:'plugins.testExec',pluginsFrom:'plugins.from',pluginsNoPlugins:'plugins.noPlugins',pluginsNoTools:'plugins.noTools',pluginsLoadedCount:'plugins.loadedCount',pluginsCustomToolsCount:'plugins.customToolsCount',pluginsRefresh:'plugins.refresh',pluginsLoadResult:'plugins.loadResult',pluginsFailed:'plugins.failed',pluginsInstalled:'plugins.installed',pluginsHeaderPlugin:'plugins.headerPlugin',pluginsHeaderVersion:'plugins.headerVersion',pluginsHeaderDesc:'plugins.headerDesc',pluginsHeaderTools:'plugins.headerTools',pluginsHeaderStatus:'plugins.headerStatus',pluginsHeaderAction:'plugins.headerAction',pluginsEnabledCheck:'plugins.enabledCheck',pluginsDisabledCircle:'plugins.disabledCircle'};
 // Reactive language version - force re-render on change
 
 var langVer = reactive({ v: 0 });
 __onLangChange(function() { langVer.v++; });
-app.config.globalProperties.__ = function(k) { langVer.v; var mk = __map[k] || k; return __t(mk); }
+app.config.globalProperties.__ = function(k) { langVer.v; return __t(__map[k] || k); }
 app.config.globalProperties.__lang = __getLang
 app.config.globalProperties.__setLang = __setLang
 app.config.globalProperties.__translate = __translate
@@ -139,34 +117,4 @@ app.config.globalProperties.__translate = __translate
 // Translation plugin: auto-scan DOM on language change
 import { translateDOM as __translate, onLangChange as __onLangChange } from './i18n.js'
 __onLangChange(function() { setTimeout(__translate, 100); })
-app.use(i18n).use(router); /* installLangMixin inline */
-(function(app) {
-  const __onLangChange = (function() {
-    var listeners = [];
-    var _currentLang = 'zh-CN';
-    if (typeof localStorage !== 'undefined') {
-      try { var ls = localStorage.getItem('ecompany_lang'); if (ls) _currentLang = ls; } catch(e) {}
-    }
-    function notify(v) { listeners.forEach(function(fn) { try { fn(v); } catch(e) {} }); }
-    return { addListener: function(fn) { listeners.push(fn); return function() { listeners = listeners.filter(function(f) { return f !== fn; }); }; }, setLang: function(v) { _currentLang = v; try { if (typeof localStorage !== 'undefined') localStorage.setItem('ecompany_lang', v); } catch(e) {} __setLang(v); i18n.global.locale.value = v; notify(v); }, getLang: function() { return _currentLang; } };
-  })();
-  window.__localLang = __onLangChange;
-  var langVer = { v: 0 };
-  __onLangChange.addListener(function() { langVer.v++; });
-  app.mixin({
-    data: function() { return { __i18nVer: 0 }; },
-    created: function() {
-      var self = this;
-      this.__disposeI18n = __onLangChange.addListener(function() { self.__i18nVer++; });
-    },
-    beforeUnmount: function() {
-      if (this.__disposeI18n) this.__disposeI18n();
-    },
-    computed: {
-      __i18nDep: function() { return this.__i18nVer; }
-    },
-    methods: {
-      __: function(k) { this.__i18nDep; var r = typeof __t === 'function' ? __t(k) : k; console.log('[I18N] __("'+k+'") = "'+r+'" locale='+window.__localLang.getLang()); return r; }
-    }
-  });
-})(app);; app.mount('#app')
+app.use(router).mount('#app')

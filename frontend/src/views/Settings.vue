@@ -9,7 +9,7 @@
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-primary" @click="saveAll">💾 {{ __('settingsSaveConfig') }}</button>
         <button class="btn btn-ghost" @click="testConnection">🔌 {{ __('settingsTestConnection') }}</button>
-        <button class="btn btn-ghost" @click="showImportExport = !showImportExport">📋 {{ __('settingsImportExport') }}</button>
+        <button class="btn btn-ghost" @click="showImportExport = !showImportExport">📋 导入/导出</button>
       </div>
     </div>
 
@@ -21,10 +21,10 @@
 
     <!-- 导入/导出 -->
     <div v-if="showImportExport" class="settings-section" style="margin-bottom:16px">
-      <h3>📋 {{ __('settingsImportExportTitle') }}</h3>
+      <h3>📋 配置导入/导出</h3>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="save-btn" @click="exportConfig">📤 {{ __('settingsExportConfig') }}</button>
-        <label class="save-btn" style="cursor:pointer">📥 {{ __('settingsImportConfig') }}<input type="file" accept=".json" hidden @change="importConfig" /></label>
+        <button class="save-btn" @click="exportConfig">📤 导出配置（JSON）</button>
+        <label class="save-btn" style="cursor:pointer">📥 导入配置<input type="file" accept=".json" hidden @change="importConfig" /></label>
       </div>
     </div>
 
@@ -46,42 +46,33 @@
         <!-- 模型选择 -->
         <div class="model-select-area" v-if="provider">
           <div class="model-search-bar">
-            <input v-model="modelSearch" class="input" style="flex:1;min-width:0" :placeholder="__('settingsSearchModel')" />
+            <input v-model="modelSearch" class="input" style="flex:1;min-width:0" placeholder="搜索模型名称..." />
             <div class="tag-filters">
-              <span v-for="tag in modelFilterOptions" :key="tag"
+              <span v-for="tag in ['推理','代码','视觉','快速','低成本']" :key="tag"
                 class="filter-tag" :class="{active:modelFilter.includes(tag)}"
                 @click="toggleModelFilter(tag)">{{ tag }}</span>
-              <span v-if="modelFilter.length" class="filter-tag clear" @click="modelFilter=[]">✕ {{ __('settingsClearFilter') }}</span>
+              <span v-if="modelFilter.length" class="filter-tag clear" @click="modelFilter=[]">✕ 清除</span>
             </div>
           </div>
 
-          <div class="model-actions">
-            <button class="btn btn-ghost" @click="selectAllModels" :disabled="hasAllEnabled">✅ 全选</button>
-            <button class="btn btn-ghost" @click="deselectAllModels" :disabled="hasNoneEnabled">⬜ 取消全选</button>
-            <span style="font-size:11px;color:var(--fg3)">{{ enabledModelCount }}/{{ modelCount }} 模型已启用</span>
-          </div>
           <div class="model-grid">
             <div v-for="m in filteredModels" :key="m.id" class="model-card"
-              :class="{selected:model===m.id}" @click="selectModel(m)">
-              <label class="model-checkbox">
-              <input type="checkbox" :checked="enabledModels[m.id]!==false" @change="toggleModel(m)" />
-              </label>
-
+              :class="{selected:model===m.id}" @click="model=m.id; modelSearch=''; try { localStorage.setItem('ecompany_model', m.id) } catch(e){}">
               <div class="mc-header">
                 <span class="mc-name">{{ m.label || m.id }}</span>
-                <span v-if="isDefaultModel(m.id)" class="mc-rec">{{ __('settingsRecommended') }}</span>
+                <span v-if="isDefaultModel(m.id)" class="mc-rec">推荐</span>
               </div>
               <div class="mc-tags">
                 <span v-for="t in (m.tags||[])" :key="t" class="mc-tag">{{ t }}</span>
               </div>
               <div class="mc-id"><code>{{ m.id }}</code></div>
               <div v-if="(m.contextWindow||0)" class="mc-ctx">📦 {{ fmtCtx((m.contextWindow||0)) }}</div>
-              <div v-if="model === m.id" class="mc-check">✓ {{ __('settingsSelected') }}</div>
+              <div v-if="model === m.id" class="mc-check">✓ 已选</div>
             </div>
             <div v-if="!filteredModels.length && modelSearch" class="model-card add-custom">
-              <div class="mc-header"><span class="mc-name">{{ __('settingsUse') }} "{{ modelSearch }}"</span></div>
-              <div class="mc-tags"><span class="mc-tag" style="background:rgba(78,205,196,0.15);color:var(--accent)">{{ __('settingsCustomModel') }}</span></div>
-              <button class="btn btn-ghost" @click="model=modelSearch; modelSearch=''" style="margin-top:6px">{{ __('settingsUseModel') }}</button>
+              <div class="mc-header"><span class="mc-name">使用 "{{ modelSearch }}"</span></div>
+              <div class="mc-tags"><span class="mc-tag" style="background:rgba(78,205,196,0.15);color:var(--accent)">自定义模型名</span></div>
+              <button class="btn btn-ghost" @click="model=modelSearch; modelSearch=''" style="margin-top:6px">使用此模型</button>
             </div>
           </div>
         </div>
@@ -89,24 +80,24 @@
         <!-- API 凭据 -->
         <div class="cred-area" v-if="provider">
           <div class="cred-row">
-            <span class="cred-label">{{ __('settingsApiKey') }}</span>
+            <span class="cred-label">API Key</span>
             <div style="flex:1;display:flex;gap:4px;align-items:center">
               <input v-model="apiKey" class="input" style="flex:1" :type="showKey?'text':'password'"
-                :placeholder="__('settingsEnterKey') + ' ' + (providerLabels[provider]||provider) + ' Key'" />
-              <button class="btn btn-ghost" style="flex-shrink:0;padding:4px 8px;font-size:11px" @click="showKey=!showKey">{{ showKey ? __('settingsHide') : __('settingsShow') }}</button>
-              <a v-if="keyUrls[provider]" :href="keyUrls[provider]" target="_blank" class="key-link" style="flex-shrink:0">{{ __('settingsGetKey') }} ↗</a>
+                :placeholder="'输入 ' + (providerLabels[provider]||provider) + ' Key'" />
+              <button class="btn btn-ghost" style="flex-shrink:0;padding:4px 8px;font-size:11px" @click="showKey=!showKey">{{ showKey?'隐藏':'显示' }}</button>
+              <a v-if="keyUrls[provider]" :href="keyUrls[provider]" target="_blank" class="key-link" style="flex-shrink:0">获取 Key ↗</a>
             </div>
           </div>
           <div class="cred-row">
-            <span class="cred-label">{{ __('settingsApiBase') }}</span>
+            <span class="cred-label">API 地址</span>
             <input v-model="apiBase" class="input" style="flex:1"
               :placeholder="apiBases[provider] || 'https://api.deepseek.com/v1/chat/completions'" />
             <button v-if="apiBase !== apiBases[provider] && apiBases[provider]" class="btn btn-ghost" style="flex-shrink:0;padding:2px 6px;font-size:10px" @click="apiBase=apiBases[provider]">重置</button>
           </div>
           <div class="cred-row">
-            <span class="cred-label">{{ __('settingsTestResult') }}</span>
+            <span class="cred-label">测试结果</span>
             <div style="flex:1;font-size:12px">
-              <span v-if="lastTestResult === null" style="color:var(--fg3)">{{ __('settingsTestHint') }}</span>
+              <span v-if="lastTestResult === null" style="color:var(--fg3)">点击「🔌 测试连接」验证</span>
               <span v-else :style="{color:lastTestResult.ok?'#22c55e':'#ef4444'}">
                 {{ lastTestResult.ok ? '✅ ' + __('settingsConnectionOk') : '❌ ' + (lastTestResult.msg || __('settingsConnectionFail')) }}
               </span>
@@ -118,7 +109,7 @@
 
     <!-- ===== 轮询策略 ===== -->
     <div class="settings-section">
-      <h3>🔄 {{ __('settingsMultiModelStrategy') }}</h3>
+      <h3>🔄 多模型策略</h3>
       <div class="strategy-grid">
         <div v-for="s in strategies" :key="s.id" class="strategy-card"
           :class="{active:rotationMode===s.id}" @click="rotationMode=s.id">
@@ -128,50 +119,80 @@
         </div>
       </div>
       <div v-if="rotationMode==='fallback' || rotationMode==='roundrobin'" class="backup-models">
-        <div style="font-size:12px;color:var(--fg2);margin-bottom:6px">{{ __('settingsBackupModels') }}</div>
+        <div style="font-size:12px;color:var(--fg2);margin-bottom:6px">备用模型列表</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center">
           <span v-for="(m,i) in backupModels" :key="i" class="backup-tag">
             {{ m }} <span class="backup-del" @click="backupModels.splice(i,1)">✕</span>
           </span>
           <input v-model="newBackupModel" @keydown.enter.prevent="addBackupModel"
-            :placeholder="__('settingsAddBackupModel')" class="backup-input" />
+            placeholder="输入模型名回车添加" class="backup-input" />
         </div>
       </div>
     </div>
 
     <!-- ===== Provider Key 管理 ===== -->
     <div class="settings-section">
-      <h3>🔑 {{ __('settingsProviderKeyManagement') }}</h3>
+      <h3>🔑 多 Provider 密钥管理</h3>
       <div class="pk-grid">
         <div v-for="(val,key) in providerKeys" :key="key" class="pk-row">
           <span class="pk-icon">{{ provIcon(key) }}</span>
           <span class="pk-label">{{ providerLabels[key] || key }}</span>
           <input v-model="providerKeys[key]" class="input" style="flex:1;min-width:0" type="password"
-            :placeholder="__('settingsEnterKey') + ' ' + key + ' Key'" />
+            :placeholder="'输入 ' + key + ' Key'" />
           <span class="pk-status" :class="{ok:val && val.length>10}">
             {{ val && val.length>10 ? '✅' : '⏳' }}
           </span>
         </div>
       </div>
       <div style="margin-top:10px;display:flex;gap:6px">
-        <button class="save-btn" @click="saveProviderKeys">💾 {{ __('settingsSaveAllKeys') }}</button>
-        <button class="btn btn-ghost" @click="loadProviderKeys">🔄 {{ __('settingsRefreshStatus') }}</button>
+        <button class="save-btn" @click="saveProviderKeys">💾 保存所有 Key</button>
+        <button class="btn btn-ghost" @click="loadProviderKeys">🔄 刷新状态</button>
       </div>
     </div>
 
-    <!-- ===== 恢复出厂设置 ===== -->
-    <div class="settings-section" style="border-color:rgba(239,68,68,0.3)">
-      <h3 style="color:#ef4444">⚠️ {{ __('settingsDangerAction') }}</h3>
-      <p style="font-size:12px;color:var(--fg3);margin:0 0 10px">{{ __('settingsResetWarning') }}</p>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <button class="reset-btn" @click="confirmReset" :disabled="resetting">{{ resetting ? __('settingsResetting') : '🧹 ' + __('settingsResetFactory') }}</button>
-        <div v-if="showResetConfirm" style="display:flex;gap:6px;align-items:center">
-          <input v-model="resetConfirmText" :placeholder="__('settingsResetConfirmHint')" class="input" style="width:130px" />
-          <button class="reset-btn-exec" :disabled="resetConfirmText!==__('settingsResetConfirmKeyword')" @click="executeReset">{{ __('settingsResetExecute') }}</button>
-          <button class="save-btn" @click="showResetConfirm=false;resetConfirmText=''">{{ __('settingsCancel') }}</button>
+    <!-- ===== 渠道状态 ===== -->
+    <div class="settings-section">
+      <h3>🔌 {{ __('settingsChannelConfig') }}</h3>
+      <div class="health-grid">
+        <div v-for="ch in channels" :key="ch.id" class="health-item">
+          <div class="lbl">{{ ch.icon }} {{ ch.name }}</div>
+          <div>
+            <span v-if="ch.loading" style="color:var(--fg3)">{{ __('channelChecking') }}</span>
+            <span v-else :style="{color:ch.connected?'#22c55e':'#ef4444'}" style="font-weight:500">
+              {{ ch.connected ? __('channelConnected') : __('channelDisconnected') }}
+            </span>
+          </div>
+          <div style="font-size:11px;color:var(--fg3);margin-top:2px">{{ ch.description }}</div>
+          <div style="margin-top:6px">
+            <button class="save-btn" style="padding:3px 10px;font-size:11px" @click="showChannelGuide(ch)">
+              {{ ch.showGuide ? __('channelGuide') : (ch.connected ? __('channelConfigure') : __('channelSetup')) }}
+            </button>
+          </div>
+          <div v-if="ch.showGuide" style="margin-top:10px;padding:10px;background:rgba(255,255,255,0.04);border-radius:6px;font-size:12px;color:var(--fg2);grid-column:1/-1">
+            <div v-if="ch.steps && ch.steps.length" style="margin-bottom:10px">
+              <div style="font-weight:600;color:#fff;margin-bottom:4px">📋 开通步骤</div>
+              <div v-for="(s, si) in ch.steps" :key="si" style="padding:2px 0;color:var(--fg2)">{{ s }}</div>
+            </div>
+            <div v-if="ch.fields && ch.fields.length" style="margin-bottom:10px">
+              <div style="font-weight:600;color:#fff;margin-bottom:6px">🔑 填写凭证</div>
+              <div v-for="f in ch.fields" :key="f.key" style="margin-bottom:6px">
+                <label style="display:block;font-size:11px;color:var(--fg3);margin-bottom:2px">{{ f.label }}</label>
+                <input :type="f.type || 'text'" v-model="ch.credentialValues[f.key]"
+                  :placeholder="f.placeholder || ''"
+                  style="width:100%;padding:6px 10px;border-radius:4px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:var(--fg);font-size:12px;outline:none" />
+              </div>
+            </div>
+            <div v-if="ch.testResult" style="margin-top:6px;padding:4px 8px;border-radius:4px;font-size:11px" :style="{background:ch.testResult.ok?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)',color:ch.testResult.ok?'#22c55e':'#ef4444'}">
+              {{ ch.testResult.ok ? '✅ ' + ch.testResult.msg : '❌ ' + (ch.testResult.msg || ch.testResult.error || __('harnessFailed')) }}
+              <span v-if="ch.testResult.latency > 0" style="margin-left:6px;opacity:0.7">{{ ch.testResult.latency }}ms</span>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="save-btn" style="padding:3px 10px;font-size:11px" @click="testChannel(ch)">🔌 {{ __('settingsTestConnection') }}</button>
+              <button class="btn btn-primary" style="padding:3px 10px;font-size:11px" @click="installChannel(ch)">{{ __('settingsSaveConfig') }}</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div v-if="resetMsg" style="margin-top:8px;font-size:12px" :style="{color:resetOk?'#22c55e':'#ef4444'}">{{ resetMsg }}</div>
     </div>
   </div>
 </template>
@@ -185,23 +206,23 @@ export default {
       provider: (localStorage.getItem('ecompany_provider') || 'deepseek'), model: (localStorage.getItem('ecompany_model') || ''), apiKey: '', apiBase: '',
       showKey: false, lastTestResult: null,
       modelSearch: '', modelFilter: [],
-      providerModels: {}, configuredProviders: {}, providerDefaults: {}, enabledModels: {},
+      providerModels: {}, configuredProviders: {}, providerDefaults: {},
       providerList: ['deepseek','openai','claude','gemini','openrouter','moonshot','tongyi','zhipu','siliconflow','baichuan','minimax','doubao','step','custom','hunyuan','ernie','yi'],
       providerLabels: { deepseek:'DeepSeek', openai:'OpenAI', claude:'Anthropic Claude', gemini:'Google Gemini', openrouter:'OpenRouter', moonshot:'Moonshot', tongyi:'通义千问', zhipu:'智谱 GLM', siliconflow:'SiliconFlow', baichuan:'百川智能', minimax:'MiniMax', doubao:'豆包', step:'阶跃星辰', custom:'自定义', hunyuan:'腾讯混元', ernie:'文心一言', yi:'零一万物' },
       providerIcons: { deepseek:'🟢', openai:'🟡', claude:'🟣', gemini:'🔵', openrouter:'🟠', moonshot:'🌙', tongyi:'☁️', zhipu:'🔮', siliconflow:'💎', baichuan:'🌊', minimax:'🎯', doubao:'🫘', step:'🚀', custom:'🔧', hunyuan:'🌊' },
       keyUrls: { deepseek:'https://platform.deepseek.com/api_keys', openai:'https://platform.openai.com/api-keys', claude:'https://console.anthropic.com/settings/keys', gemini:'https://aistudio.google.com/app/apikey', openrouter:'https://openrouter.ai/keys', moonshot:'https://platform.moonshot.cn/console/api-keys', tongyi:'https://dashscope.aliyun.com/', zhipu:'https://open.bigmodel.cn/usercenter/apikeys', siliconflow:'https://cloud.siliconflow.cn/', baichuan:'https://platform.baichuan-ai.com/', minimax:'https://platform.minimaxi.com/', doubao:'https://console.volcengine.com/ark/', step:'https://platform.stepfun.com/', custom:'', hunyuan:'https://console.cloud.tencent.com/cam/capi', ernie:'https://console.bce.baidu.com/', yi:'https://platform.01.ai/' },
       apiBases: { deepseek:'https://api.deepseek.com/v1/chat/completions', openai:'https://api.openai.com/v1/chat/completions', claude:'https://api.anthropic.com/v1/messages', gemini:'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', openrouter:'https://openrouter.ai/api/v1/chat/completions', moonshot:'https://api.moonshot.cn/v1/chat/completions', tongyi:'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', zhipu:'https://open.bigmodel.cn/api/paas/v4/chat/completions', siliconflow:'https://api.siliconflow.cn/v1/chat/completions', baichuan:'https://api.baichuan-ai.com/v1/chat/completions', minimax:'https://api.minimaxi.com/v1/text/chatcompletion', doubao:'https://ark.cn-beijing.volces.com/api/v3/chat/completions', step:'https://api.stepfun.com/v1/chat/completions', custom:'http://localhost:11434/v1/chat/completions', hunyuan:'https://api.hunyuan.cloud.tencent.com/v1/chat/completions', ernie:'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions', yi:'https://api.01.ai/v1/chat/completions' },
       rotationMode: 'fixed', backupModels: [], newBackupModel: '',
-      providerKeys: {}, providerKeysLoaded: false,
-      providerListAll: ['deepseek','openai','claude','gemini','openrouter','moonshot','tongyi','zhipu','siliconflow','baichuan','minimax','doubao','step','custom','hunyuan','ernie','yi','groq'],
+      channels: [
+        { id:'feishu', name:'飞书', icon:'📘', description:'消息通知', connected:false, loading:true, showGuide:false, fields:[] },
+        { id:'personal_wx', name:'个人微信', icon:'💬', description:'扫码绑定', connected:false, loading:true, showGuide:false, fields:[] },
+        { id:'dingtalk', name:'钉钉', icon:'📱', description:'API 凭证', connected:false, loading:true, showGuide:false, fields:[] },
+        { id:'wecom', name:'企业微信', icon:'🏢', description:'企微开放平台', connected:false, loading:true, showGuide:false, fields:[] },
+        { id:'qqbot', name:'QQ 机器人', icon:'🐧', description:'QQ 开放平台', connected:false, loading:true, showGuide:false, fields:[] }
+      ],
+      providerKeys: {},
       toast: { show: false, msg: '', type: 'success' },
-      showImportExport: false,
-      // 恢复出厂设置
-      showResetConfirm: false,
-      resetConfirmText: '',
-      resetting: false,
-      resetMsg: '',
-      resetOk: false
+      showImportExport: false
     }
   },
   computed: {
@@ -218,29 +239,12 @@ export default {
     },
     strategies() {
       return [
-        { id:'fixed', icon:'🎯', name:this.__('strategyFixed'), desc:this.__('strategyFixedDesc') },
-        { id:'fallback', icon:'🔄', name:this.__('strategyFallback'), desc:this.__('strategyFallbackDesc') },
-        { id:'roundrobin', icon:'🔁', name:this.__('strategyRoundrobin'), desc:this.__('strategyRoundrobinDesc') },
-        { id:'smart', icon:'🧠', name:this.__('strategySmart'), desc:this.__('strategySmartDesc') }
+        { id:'fixed', icon:'🎯', name:'固定模型', desc:'始终使用当前选择的模型' },
+        { id:'fallback', icon:'🔄', name:'自动回退', desc:'主模型失败→自动切换备用' },
+        { id:'roundrobin', icon:'🔁', name:'轮流使用', desc:'按顺序轮流使用多个模型' },
+        { id:'smart', icon:'🧠', name:'智能路由', desc:'按任务复杂度自动选最优模型' }
       ]
-  },
-  hasAllEnabled: function() {
-    var models = (this.providerModels && this.providerModels[this.provider]) || [];
-    if (!models.length) return false;
-    return models.every(function(m) { return !m.hidden && this.enabledModels[m.id] !== false }.bind(this))
-  },
-  hasNoneEnabled: function() {
-    var models = (this.providerModels && this.providerModels[this.provider]) || [];
-    if (!models.length) return true;
-    return models.every(function(m) { return this.enabledModels[m.id] === false }.bind(this))
-  },
-  enabledModelCount: function() {
-    var models = (this.providerModels && this.providerModels[this.provider]) || [];
-    return models.filter(function(m) { return this.enabledModels[m.id] !== false }.bind(this)).length;
-  },
-  modelCount: function() {
-    return ((this.providerModels && this.providerModels[this.provider]) || []).length;
-  }
+    }
   },
   methods: {
     /* === Safe getters === */
@@ -251,76 +255,22 @@ export default {
     /* === Toast === */
     showToast(msg, type) { this.toast = { show: true, msg, type: type||'success' }; setTimeout(() => this.toast.show = false, 3000) },
     /* === 提供商/模型 === */
-
-  /* === 模型启用控制 === */
-  toggleModel(m) {
-    if (!m || !m.id) return;
-    if (!this.enabledModels) this.enabledModels = {};
-    var cur = this.enabledModels[m.id];
-    this.enabledModels[m.id] = cur === false ? true : false;
-    this.saveEnabledModels();
-  },
-  selectModel(m) {
-    if (!m || !m.id) return;
-    this.model = m.id;
-    this.modelSearch = '';
-    try { localStorage.setItem('ecompany_model', m.id) } catch(e){}
-    // Auto-enable selected model
-    if (this.enabledModels && this.enabledModels[m.id] === false) {
-      this.enabledModels[m.id] = true;
-      this.saveEnabledModels();
-    }
-  },
-  selectAllModels() {
-    var models = (this.providerModels && this.providerModels[this.provider]) || [];
-    var self = this;
-    models.forEach(function(m) { self.enabledModels[m.id] = true });
-    this.saveEnabledModels();
-  },
-  deselectAllModels() {
-    var models = (this.providerModels && this.providerModels[this.provider]) || [];
-    if (!models.length) return;
-    var self = this;
-    // Keep at least one enabled (the first one)
-    models.forEach(function(m,i) { self.enabledModels[m.id] = i === 0 });
-    this.saveEnabledModels();
-  },
-  loadEnabledModels() {
-    try {
-      var raw = localStorage.getItem('ecompany_enabled_models');
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        this.enabledModels = parsed[this.provider] || {};
-      }
-    } catch(e) { this.enabledModels = {} }
-  },
-  saveEnabledModels() {
-    try {
-      var key = 'ecompany_enabled_models';
-      var all = JSON.parse(localStorage.getItem(key) || '{}');
-      all[this.provider] = this.enabledModels || {};
-      localStorage.setItem(key, JSON.stringify(all));
-    } catch(e) {}
-  },
-
     selectProvider(p) { try { localStorage.setItem('ecompany_provider', p) } catch(e){}
       this.provider = p; this.apiBase = ''; this.apiKey = (this.providerKeys || {})[p] || ''
       const models = (this.providerModels || {})[p] || []
       this.model = (this.providerDefaults || {})[p] || (models[0] && models[0].id) || ''
-    this.loadEnabledModels()
     },
     toggleModelFilter(tag) {
       const i = this.modelFilter.indexOf(tag)
       i > -1 ? this.modelFilter.splice(i, 1) : this.modelFilter.push(tag)
     },
-    fmtCtx(n) { return n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : n + 'B' },
+    fmtCtx(n) { return n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(0)+'K' : n+' 上下文' },
     /* === 加载 === */
     async loadProviderModels() {
       try {
         const d = await API.get('/api/models/providers')
         if (d && d.providers) {
           for (const k in d.providers) { if (d.providers[k].models) this.providerModels[k] = d.providers[k].models; if (d.providers[k].configured) this.configuredProviders[k] = true }
-          this.loadEnabledModels()
         }
       } catch(e) { try { var lp = localStorage.getItem('ecompany_provider'); if (lp) this.provider = lp; var lm = localStorage.getItem('ecompany_model'); if (lm) this.model = lm; } catch(e2) {} }
     },
@@ -339,69 +289,17 @@ export default {
       } catch(e) { try { var lp = localStorage.getItem('ecompany_provider'); if (lp) this.provider = lp; var lm = localStorage.getItem('ecompany_model'); if (lm) this.model = lm; } catch(e2) {} }
     },
     async saveAll() {
-      // 统一使用新模型管理API
-      const body = { key: this.provider, apiKey: '', baseUrl: this.apiBase }
+      const body = { provider:this.provider, model:this.model, apiBase:this.apiBase }
       if (this.apiKey && this.apiKey.length > 10 && !this.apiKey.includes('****')) body.apiKey = this.apiKey
-      // 同时保存当前选中的模型版本
-      if (this.model) {
-        var modelVersions = (this.providerModels && this.providerModels[this.provider]) || []
-        // 使用模型启用状态（勾选框选择），确保当前选中模型至少有一个启用
-        var exists = modelVersions.some(function(m) { return m.id === this.model }.bind(this))
-        var hasAnyEnabled = modelVersions.some(function(m) { return this.enabledModels && this.enabledModels[m.id] !== false }.bind(this))
-        body.models = modelVersions.map(function(m) {
-          var en = this.enabledModels && this.enabledModels[m.id]
-          // 如果没有任何模型启用则默认启用当前选中的
-          if (!hasAnyEnabled && m.id === this.model) en = true
-          return { id: m.id, name: m.label, tags: m.tags || ['user-configured'], enabled: en !== false, contextWindow: m.contextWindow || 0 }
-        }.bind(this))
-        if (!exists) {
-          body.models.push({ id: this.model, name: this.providerLabels[this.provider] + ' ' + this.model, tags: ['user-configured'], enabled: true, contextWindow: 0 })
-        }
-      }
-      const r = await API.post('/api/models/providers', body)
-      // 同时保存策略配置
-      try {
-        await API.post('/api/models/strategy', { strategy: this.rotationMode || 'fixed', backupModels: this.backupModels || [] });
-      } catch(e) {}
-      if (r && r.ok) {
-        this.configuredProviders[this.provider] = true
-        this.showToast(this.$t('settingsSaved') || '配置已保存', 'success')
-        // 刷新provider数据
-        this.loadProviderModels()
-      } else {
-        this.showToast('⚠️ ' + (this.$t('settingsSaveFailed') || '配置保存失败'), 'warn')
-      }
+      const r = await API.post('/api/v4/settings/provider', body)
+      r && r.ok ? (this.configuredProviders[this.provider] = true, this.showToast('✅ 配置已保存')) : this.showToast('⚠️ 配置保存失败', 'warn')
     },
     async saveProviderKeys() {
-      try { let count = 0; for (const prov in this.providerKeys) {
-        const key = this.providerKeys[prov]; if (key && key.length > 10) {
-          const r = await API.post('/api/models/providers', { key: prov, apiKey: key }); if (r && r.ok) count++;
-        }
-      } this.showToast('✅ ' + count + ' ' + (this.$t('settingsKeysSaved') || '个密钥已保存')) } catch(e) { this.showToast('⚠️ 保存失败: ' + e.message, 'warn') }
+      try { let count = 0; for (const prov in this.providerKeys) { const key = this.providerKeys[prov]; if (key && key.length > 10) { await API.post('/api/v4/settings/apikey', { key, provider:prov }); count++ } } this.showToast('✅ ' + count + ' 个 Provider Key 已保存') } catch(e) { this.showToast('⚠️ 保存失败: ' + e.message, 'warn') }
     },
     async loadProviderKeys() {
-      try {
-        const r = await API.get('/api/models/providers');
-        if (r && r.providers) {
-          const newKeys = {}; const newCfg = {};
-          // 展示所有供应商，已配置的显示掩码，未配置的留空让用户填写
-          for (const k in r.providers) {
-            if (r.providers[k].configured) {
-              newKeys[k] = '****已配置****';
-              newCfg[k] = true;
-            } else {
-              newKeys[k] = '';
-              newCfg[k] = false;
-            }
-          }
-          // 确保全部供应商列表都在keys对象中（即使API没返回某个供应商）
-          for (const k of this.providerListAll) {
-            if (!(k in newKeys)) newKeys[k] = '';
-          }
-          this.providerKeys = newKeys; this.configuredProviders = newCfg;
-        }
-        const curKey = (this.providerKeys || {})[this.provider]; if (curKey) this.apiKey = curKey;
-      } catch(e) {}
+      try { const pk = await API.get('/api/v4/settings/apikey'); if (pk && pk.ok && pk.keys) { this.providerKeys = pk.keys; for (const k in pk.keys) { if (pk.keys[k] && pk.keys[k].length > 4) this.configuredProviders[k] = true } } const r = await API.get('/api/provider/config'); if (r && r.apiKey && !r.apiKey.includes('****')) { this.providerKeys[r.provider||'deepseek'] = r.apiKey; if (r.apiKey.length > 4) this.configuredProviders[r.provider||'deepseek'] = true } // Sync current provider's key into the input field
+const curKey = (this.providerKeys || {})[this.provider]; if (curKey) this.apiKey = curKey; } catch(e) {}
     },
     async testConnection() {
       this.lastTestResult = await API.post('/api/provider/test', {
@@ -412,71 +310,49 @@ export default {
       })
     },
     addBackupModel() { if (this.newBackupModel && !this.backupModels.includes(this.newBackupModel)) { this.backupModels.push(this.newBackupModel); this.newBackupModel = '' } },
+    showChannelGuide(ch) {
+      ch.showGuide = !ch.showGuide
+      if (ch.showGuide && !ch.credentialValues) { ch.credentialValues = {}; if (ch.fields) ch.fields.forEach(function(f) { ch.credentialValues[f.key] = '' }) }
+    },
+    async testChannel(ch) {
+      try {
+        const payload = { channel: ch.id };
+        if (ch.credentialValues) {
+          for (const k in ch.credentialValues) { if (ch.credentialValues[k]) payload[k] = ch.credentialValues[k]; }
+        }
+        const r = await API.post('/api/channel/test', payload);
+        ch.testResult = r;
+        if (r && r.ok) {
+          this.showToast(ch.name + ' ✅ ' + r.msg + ' (' + r.latency + 'ms)', 'success');
+        } else {
+          this.showToast(ch.name + ' ❌ ' + (r.msg || r.error || '测试失败'), 'warn');
+        }
+      } catch(e) { this.showToast('测试失败: ' + e.message, 'warn') }
+    },
+    async installChannel(ch) {
+      try { const payload = { channel: ch.id }; if (ch.credentialValues) { for (const k in ch.credentialValues) { if (ch.credentialValues[k]) payload[k] = ch.credentialValues[k] } }; const r = await API.post('/api/channels/install', payload); r && r.ok ? (this.showToast(ch.name+' 配置已保存！'), ch.connected = true, ch.showGuide = false) : this.showToast('保存失败: ' + ((r||{}).msg||'未知错误'), 'warn') } catch(e) { this.showToast('保存失败: ' + e.message, 'warn') }
+    },
+    async checkChannels() {
+      try { const d = await API.get('/api/channels'); if (d && d.channels) { for (const c of this.channels) { c.connected = !!d.channels[c.id]; c.loading = false } }; const list = await API.get('/api/channels/list'); if (list && list.channels) { for (const c of this.channels) { const f = list.channels.find(function(x){return x.id===c.id}); if (f) { c.fields = f.fields||[]; c.steps = f.steps||[]; c.config = f.config||{} } } } } catch(e) {}
+      this.channels.forEach(function(c){c.loading=false})
+    },
     exportConfig() {
       const config = { provider: this.provider, model: this.model, apiBase: this.apiBase, rotationMode: this.rotationMode, backupModels: this.backupModels }
       const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' })
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ecompany-settings.json'; a.click()
-      this.showToast(__('settingsExported'), 'success')
+      this.showToast('📤 配置已导出')
     },
     importConfig(e) {
       const file = e.target.files[0]; if (!file) return
       const reader = new FileReader()
       reader.onload = (ev) => {
-        try { const cfg = JSON.parse(ev.target.result); if (cfg.provider) this.provider = cfg.provider; if (cfg.model) this.model = cfg.model; if (cfg.apiBase) this.apiBase = cfg.apiBase; if (cfg.rotationMode) this.rotationMode = cfg.rotationMode; if (cfg.backupModels) this.backupModels = cfg.backupModels; this.showToast(__('settingsImportedHint'), 'success') } catch(e) { this.showToast('⚠️ 导入失败: 无效的配置文件', 'warn') }
+        try { const cfg = JSON.parse(ev.target.result); if (cfg.provider) this.provider = cfg.provider; if (cfg.model) this.model = cfg.model; if (cfg.apiBase) this.apiBase = cfg.apiBase; if (cfg.rotationMode) this.rotationMode = cfg.rotationMode; if (cfg.backupModels) this.backupModels = cfg.backupModels; this.showToast('📥 配置已导入，点击「保存全部」生效') } catch(e) { this.showToast('⚠️ 导入失败: 无效的配置文件', 'warn') }
       }
       reader.readAsText(file)
-    },
-
-    // === 恢复出厂设置 ===
-    confirmReset() {
-      this.showResetConfirm = true;
-      this.resetConfirmText = '';
-      this.resetMsg = '';
-    },
-    async executeReset() {
-      if (this.resetConfirmText !== __('settingsResetConfirmKeyword')) return;
-      this.resetting = true;
-      this.resetMsg = '';
-      try {
-        var r = await fetch('/api/system/reset-factory', { method: 'POST' });
-        var d = await r.json();
-        if (d.ok) {
-          this.resetMsg = d.message || ('✅ ' + __('settingsResetStarted'));
-          this.resetOk = true;
-          // 轮询检测服务器就绪后再刷新，避免 404/白屏
-          var pollTimer = setInterval(function() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/health', true);
-            xhr.timeout = 3000;
-            xhr.onload = function() {
-              if (xhr.status === 200) {
-                clearInterval(pollTimer);
-                // 标记需要自动回焦，Chat.vue mounted 时主动 focus
-                sessionStorage.setItem('restoreFactoryDone', '1');
-                location.reload();
-              }
-            };
-            xhr.onerror = function() {};  // 忽略，继续轮询
-            xhr.send();
-          }, 1500);
-          // 最坏情况兜底：15 秒后无论如何刷新
-          setTimeout(function() {
-            clearInterval(pollTimer);
-            location.reload();
-          }, 15000);
-        } else {
-          this.resetMsg = '❌ ' + (d.error || __('settingsResetFailed'));
-          this.resetOk = false;
-        }
-      } catch(e) {
-        this.resetMsg = '❌ ' + __('settingsResetNetError') + ': ' + e.message;
-        this.resetOk = false;
-      }
-      this.resetting = false;
     }
   },
   mounted() {
-    this.loadSettings(); this.loadProviderModels(); this.loadProviderDefaults(); this.loadProviderKeys()
+    this.loadSettings(); this.loadProviderModels(); this.loadProviderDefaults(); this.loadProviderKeys(); this.checkChannels()
   },
   watch: {
     provider(p) {
@@ -563,17 +439,4 @@ export default {
 
 .save-btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--fg2); font-size: 12px; cursor: pointer; transition: all 0.12s; }
 .save-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(78,205,196,0.04); }
-.reset-btn { padding: 8px 16px; border-radius: 6px; border: 1px solid #ef4444; background: transparent; color: #ef4444; font-size: 12px; cursor: pointer; transition: all 0.12s; }
-.reset-btn:hover { background: rgba(239,68,68,0.08); }
-.reset-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.reset-btn-exec { padding: 8px 16px; border-radius: 6px; border: 1px solid #dc2626; background: #dc2626; color: #fff; font-size: 12px; cursor: pointer; transition: all 0.12s; }
-.reset-btn-exec:hover { background: #b91c1c; }
-.reset-btn-exec:disabled { opacity: 0.4; cursor: not-allowed; background: #6b7280; border-color: #6b7280; }
-
-/* 模型版本选择 */
-.model-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; padding: 6px 8px; background: var(--bg2); border-radius: 8px; }
-.model-actions button { font-size: 11px; padding: 3px 8px; }
-.model-checkbox { display: flex; align-items: center; padding: 2px 0; cursor: pointer; }
-.model-checkbox input { width: 14px; height: 14px; cursor: pointer; accent-color: var(--accent); }
-.model-card .mc-header { margin-left: 4px; }
 </style>
