@@ -1,0 +1,8 @@
+{
+  "channels": {
+    "openclaw-weixin": {
+      "enabled": true,
+      "name": "OpenClaw 微信"
+    }
+  }
+}

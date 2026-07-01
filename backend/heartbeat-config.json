@@ -1,0 +1,12 @@
+{
+  "patrolIntervalMs": 300000,
+  "intervalMs": 60000,
+  "patrolEnabled": true,
+  "enabled": true,
+  "channels": {
+    "webchat": true,
+    "dingtalk": false,
+    "wecom": false,
+    "feishu": false
+  }
+}

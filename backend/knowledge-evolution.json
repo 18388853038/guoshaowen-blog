@@ -1,0 +1,277 @@
+[
+  {
+    "id": "learn_1781807804460",
+    "taskId": "test_manual_001",
+    "agentId": "ai_ceo",
+    "description": "测试手动学习链路 — 验证Evolve知识提炼是否正常工作",
+    "startedAt": "2026-06-18T18:36:44.460Z",
+    "stage": "ready",
+    "summary": "Agent ai_ceo 成功完成任务「测试手动学习链路 — 验证Evolve知识提炼是否正常工作」: 手动触发学习成功，Evolve引擎正确接入了知识进化流程",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: 测试手动学习链路 — 验证Evolve知识提炼是否正常工作",
+        "source": "ai_ceo",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:36:44.462Z"
+  },
+  {
+    "id": "learn_1781807804476",
+    "taskId": "test_batch_001",
+    "agentId": "ai_ceo",
+    "description": "测试批量学习1",
+    "startedAt": "2026-06-18T18:36:44.476Z",
+    "stage": "ready",
+    "summary": "Agent ai_ceo 成功完成任务「测试批量学习1」: ok",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: 测试批量学习1",
+        "source": "ai_ceo",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:36:44.478Z"
+  },
+  {
+    "id": "learn_1781807804479",
+    "taskId": "test_batch_002",
+    "agentId": "ai_ceo",
+    "description": "测试批量学习2失败",
+    "startedAt": "2026-06-18T18:36:44.479Z",
+    "stage": "ready",
+    "summary": "Agent ai_ceo 执行「测试批量学习2失败」失败: 超时",
+    "insights": [
+      {
+        "type": "lesson_learned",
+        "content": "❌ 失败教训: 超时",
+        "source": "ai_ceo",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "lesson_learned"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:36:44.482Z"
+  },
+  {
+    "id": "learn_1781807912601",
+    "taskId": "d39ef81b-0b77-4ce8-a193-a2800682216e",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:38:32.601Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: ",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:38:32.613Z"
+  },
+  {
+    "id": "learn_1781807912615",
+    "taskId": "1b0e341c-6c16-4b2b-9d12-7feb049ca793",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:38:32.615Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: ",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:38:32.618Z"
+  },
+  {
+    "id": "learn_1781807995743",
+    "taskId": "d39ef81b-0b77-4ce8-a193-a2800682216e",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:39:55.743Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: 已成功配置多提供商容灾和超时熔断机制",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:39:55.757Z"
+  },
+  {
+    "id": "learn_1781807995759",
+    "taskId": "1b0e341c-6c16-4b2b-9d12-7feb049ca793",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:39:55.759Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: 已成功配置多提供商容灾和超时熔断机制",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:39:55.761Z"
+  },
+  {
+    "id": "learn_1781808135780",
+    "taskId": "d39ef81b-0b77-4ce8-a193-a2800682216e",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:42:15.780Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: 已成功配置多提供商容灾和超时熔断机制",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:42:15.785Z"
+  },
+  {
+    "id": "learn_1781808135787",
+    "taskId": "1b0e341c-6c16-4b2b-9d12-7feb049ca793",
+    "agentId": "cto-agent",
+    "description": "P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "startedAt": "2026-06-18T18:42:15.787Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「P95延迟优化 - 配置多提供商容灾 + 超时熔断机制」: 已成功配置多提供商容灾和超时熔断机制",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T18:42:15.788Z"
+  },
+  {
+    "id": "learn_1781809664603",
+    "taskId": "4e68c2a3-221b-40cd-86d5-3fb4cb14815d",
+    "agentId": "cto-agent",
+    "description": "【闭环测试】系统健康评估并回传报告",
+    "startedAt": "2026-06-18T19:07:44.603Z",
+    "stage": "ready",
+    "summary": "Agent cto-agent 成功完成任务「【闭环测试】系统健康评估并回传报告」: ",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: 【闭环测试】系统健康评估并回传报告",
+        "source": "cto-agent",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-18T19:07:44.613Z"
+  },
+  {
+    "id": "learn_1782838148767",
+    "taskId": "task_mr0vhi6e_vquc",
+    "agentId": "ai_ceo",
+    "description": "【工具补充】为AI员工添加 memory_search 记忆搜索工具",
+    "startedAt": "2026-06-30T16:49:08.767Z",
+    "stage": "ready",
+    "summary": "Agent ai_ceo 成功完成任务「【工具补充】为AI员工添加 memory_search 记忆搜索工具」: 经再次检查，memory_search 工具实际上已经注册可用，无需额外申请。撤销此工单。",
+    "insights": [
+      {
+        "type": "best_practice",
+        "content": "✅ 成功经验: 【工具补充】为AI员工添加 memory_search 记忆搜索工具",
+        "source": "ai_ceo",
+        "confidence": "high"
+      }
+    ],
+    "knowledgeAdded": [
+      "best_practice"
+    ],
+    "metrics": {
+      "insightCount": 1,
+      "knowledgeCount": 1
+    },
+    "completedAt": "2026-06-30T16:49:08.791Z"
+  }
+]

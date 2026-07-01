@@ -25,8 +25,8 @@
           <span class="avatar-icon">{{ profile.icon || '👤' }}</span>
         </div>
         <div class="profile-info">
-          <h2>{{ profile.name || '管理员' }}</h2>
-          <div class="profile-title">{{ profile.title || '系统运营者' }}</div>
+          <h2>{{ __('profileAdmin') }}</h2>
+          <div class="profile-title">{{ __('profileTitle') }}</div>
           <div class="profile-badge-row">
             <span class="badge status-online">🟢 {{ __('online') }}</span>
             <span class="badge">{{ __('profileAdmin') }}</span>
@@ -48,7 +48,7 @@
         </div>
         <div class="form-field">
           <label>{{ __('profileName') }}</label>
-          <input v-model="profile.name" class="input" :placeholder="'管理员'" />
+          <input v-model="profile.name" class="input" :placeholder="__('profileAdmin')" />
         </div>
         <div class="form-field">
           <label>{{ __('profileNameEn') }}</label>
@@ -56,11 +56,11 @@
         </div>
         <div class="form-field">
           <label>{{ __('profileTitle2') }}</label>
-          <input v-model="profile.title" class="input" :placeholder="'系统运营者'" />
+          <input v-model="profile.title" class="input" :placeholder="__('profileTitle')" />
         </div>
         <div class="form-field" style="grid-column: 1 / -1">
           <label>{{ __('profileBio') }}</label>
-          <textarea v-model="profile.bio" class="input" rows="3" :placeholder="__('profileBioPlaceholder')" style="resize:vertical;font-size:13px;padding:10px;line-height:1.6"></textarea>
+          <textarea v-model="profile.bio" class="input" rows="3" :placeholder="__('profileBioPlaceholder')" style="resize:vertical;font-size:13px;padding:10px;line-height:1.5"></textarea>
         </div>
       </div>
     </div>
@@ -95,8 +95,8 @@
         <div class="form-field">
           <label>{{ __('profileLanguage') }}</label>
           <select v-model="profile.lang" class="input" @change="applyLang">
-            <option value="zh-CN">简体中文</option>
-            <option value="en">English</option>
+            <option value="zh-CN">{{ __('profileLangZh') }}</option>
+            <option value="en">{{ __('profileLangEn') }}</option>
           </select>
         </div>
       </div>
@@ -108,7 +108,7 @@
       <div class="health-grid">
         <div class="health-item">
           <div class="lbl">{{ __('profileTitle2') }}</div>
-          <div class="val" style="font-size:14px">{{ __('profileAdminFull') }}</div>
+          <div class="val" style="font-size:14px;color:var(--fg)">{{ __('profileAdminFull') }}</div>
         </div>
         <div class="health-item">
           <div class="lbl">{{ __('profileCreatedAt') }}</div>
@@ -116,7 +116,7 @@
         </div>
         <div class="health-item">
           <div class="lbl">{{ __('profileSystemName') }}</div>
-          <div class="val" style="font-size:13px;color:var(--fg)">eCompany-Claw v3.0</div>
+          <div class="val" style="font-size:13px;color:var(--fg)">ECompany Asst v2.0</div>
         </div>
         <div class="health-item">
           <div class="lbl">{{ __('profileLicenseStatus') }}</div>
@@ -145,9 +145,6 @@
 
 <script>
 import { API } from '../main.js'
-
-
-
 
 
 export default {
@@ -206,17 +203,17 @@ export default {
       API.put('/api/profile', this.profile).then(data => {
         if (data && data.profile) {
           this.profile = data.profile
-          this.saveMsg = '✅ ' + (this.currentLang === 'en' ? 'Profile saved!' : '资料已保存')
+          this.saveMsg = '✅ ' + __('profileSaved')
           this.saveError = false
         } else if (data && data.error) {
           this.saveMsg = data.error
           this.saveError = true
         } else {
-          this.saveMsg = this.currentLang === 'en' ? 'Save failed, please retry' : '保存失败，请重试'
+          this.saveMsg = __('saveErrorRetry')
           this.saveError = true
         }
       }).catch(e => {
-        this.saveMsg = this.currentLang === 'en' ? 'Network error' : '网络错误'
+        this.saveMsg = __('commonNetworkError')
         this.saveError = true
       }).finally(() => {
         this.saving = false
@@ -224,7 +221,7 @@ export default {
       })
     },
     formatDate(dateStr) {
-      if (!dateStr) return this.currentLang === 'en' ? 'Unknown' : '未知'
+      if (!dateStr) return this.__('profileCreatedAtUnknown')
       try {
         const d = new Date(dateStr)
         const locale = this.currentLang === 'en' ? 'en-US' : 'zh-CN'

@@ -1,0 +1,116 @@
+[
+  {
+    "id": "pref_mqgdhg6lxe",
+    "category": "preference",
+    "action": "prefer_concise",
+    "inferredLabel": "您偏向 prefer_concise（最近活跃）",
+    "confidence": 1,
+    "evidence": {
+      "occurrences": 23,
+      "weightedScore": 22.79,
+      "recentDays": 1,
+      "samples": [
+        "偏好简洁直接的回复风格",
+        "偏好简洁直接的回复风格",
+        "偏好简洁直接的回复风格"
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1781598058797
+  },
+  {
+    "id": "pref_mqgdhg6lqf",
+    "category": "format",
+    "action": "avoid_negative_tone",
+    "inferredLabel": "您似乎偏好 avoid_negative_tone 的格式风格（最近活跃）",
+    "confidence": 0.644,
+    "evidence": {
+      "occurrences": 13,
+      "weightedScore": 12.88,
+      "recentDays": 1,
+      "samples": [
+        "避免使用否定语气",
+        "避免使用否定语气",
+        "避免使用否定语气"
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1781598058797
+  },
+  {
+    "id": "pref_mqgdhg6l3q",
+    "category": "command",
+    "action": "cli_style_prefix",
+    "inferredLabel": "您经常使用 cli_style_prefix 类操作（最近活跃）",
+    "confidence": 0.294,
+    "evidence": {
+      "occurrences": 6,
+      "weightedScore": 5.88,
+      "recentDays": 1,
+      "samples": [
+        "使用动作前缀命令风格",
+        "使用动作前缀命令风格",
+        "使用动作前缀命令风格"
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1781598058797
+  },
+  {
+    "id": "pref_mqgdhg6luz",
+    "category": "report",
+    "action": "view_任务_report",
+    "inferredLabel": "您倾向于查看 view_任务_report 类报表（最近活跃）",
+    "confidence": 0.2375,
+    "evidence": {
+      "occurrences": 5,
+      "weightedScore": 4.75,
+      "recentDays": 1,
+      "samples": [
+        "查看任务类报表",
+        "查看任务类报表",
+        "查看任务类报表"
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1781598058797
+  },
+  {
+    "id": "pref_mqwgv3upop",
+    "category": "report",
+    "action": "view_用户_report",
+    "inferredLabel": "您倾向于查看 view_用户_report 类报表（近一个月）",
+    "confidence": 0.236,
+    "evidence": {
+      "occurrences": 8,
+      "weightedScore": 4.72,
+      "recentDays": 11,
+      "samples": [
+        "查看用户类报表",
+        "查看用户类报表",
+        "查看用户类报表"
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1782571193665
+  },
+  {
+    "id": "pref_mqwh66dxab",
+    "category": "test",
+    "action": "validate_api",
+    "inferredLabel": "观察到习惯：validate_api（最近活跃）",
+    "confidence": 0.15,
+    "evidence": {
+      "occurrences": 3,
+      "weightedScore": 3,
+      "recentDays": 0,
+      "samples": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "status": "pending",
+    "createdAt": 1782571710165
+  }
+]

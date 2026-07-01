@@ -1,0 +1,384 @@
+[
+  {
+    "id": "6ed09ce9-2c73-4e4d-a41f-8545d11116ef",
+    "title": "Test（已更新）",
+    "content": "Hello KB - updated content for versioning test",
+    "tags": [
+      "测试",
+      "质量"
+    ],
+    "category": "测试质量",
+    "author": "system",
+    "source": "manual",
+    "status": "active",
+    "version": 2,
+    "createdAt": "2026-06-12T16:57:22.066Z",
+    "updatedAt": "2026-06-16T21:30:58.999Z",
+    "history": [
+      {
+        "title": "Test（初版）",
+        "content": "Hell",
+        "tags": [
+          "测试",
+          "质量"
+        ],
+        "version": 0,
+        "savedAt": "2026-06-13T21:30:49.198Z"
+      },
+      {
+        "title": "Test",
+        "content": "Hello KB",
+        "tags": [
+          "测试",
+          "质量"
+        ],
+        "version": 1,
+        "savedAt": "2026-06-16T21:30:58.999Z"
+      }
+    ],
+    "type": "knowledge"
+  },
+  {
+    "id": "4e1384e6-3611-45cb-89f8-722a8a121c90",
+    "title": "系统配置",
+    "content": "服务器配置文件位于 backend/ai-provider.json",
+    "tags": [
+      "配置",
+      "系统"
+    ],
+    "category": "系统配置",
+    "author": "system",
+    "source": "manual",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-12T17:17:11.191Z",
+    "updatedAt": "2026-06-12T17:17:11.191Z",
+    "history": [
+      {
+        "title": "系统配置（初版）",
+        "content": "服务器配置文件位于 backend",
+        "tags": [
+          "配置",
+          "系统"
+        ],
+        "version": 0,
+        "savedAt": "2026-06-13T21:30:49.199Z"
+      }
+    ],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_1781422932597_2t1g",
+    "agentId": "cto",
+    "summary": "P95延迟过高排查与优化（7809ms/阈值5000ms）",
+    "detail": "{\"reply\":\"\",\"memory\":{\"decisions\":[],\"notes\":[],\"status\":\"idle\",\"currentTask\":null,\"lastActive\":\"2026-06-14T07:42:12.580Z\",\"conversations\":[{\"role\":\"user\",\"content\":\"【系统自动唤醒】检测到你有待办任务：「P95延迟过高排查与优化（7809ms/阈值5000ms）」(优先级:high)。请立即调用 check_pending_tasks 查看任务详情，然后 claim_task 领取并执行。完成任务后务必调用 complete_claimed_task 完成回调。\",\"time\":\"2026-06-14T07:41:59.793Z\"},{\"role\":\"assistant\",\"content\":\"\",\"time\":\"2026-06-14T07:41:59.793Z\"},{\"role\":\"user\",\"content\":\"任务标题：P95延迟过高排查与优化（7809ms/阈值5000ms）\\n任务描述：【问题描述】当前系统P9",
+    "tags": [
+      "priority:high",
+      "scheduled"
+    ],
+    "sharedAt": "2026-06-14T07:42:12.597Z",
+    "accessCount": 17,
+    "history": [],
+    "version": 1,
+    "type": "knowledge"
+  },
+  {
+    "id": "46a34547-f46d-4225-8b86-9501029cab00",
+    "title": "任务提交流程规则：自动拉起审阅",
+    "content": "规则：当AI员工（CTO-Agent等）提交任务完成时，系统必须自动拉起小龙（CEO-Agent）进行审阅，而不是等小龙手动巡查发现。\n\n背景：2026-06-14发现CTO-Agent完成P95延迟排查任务后，因无自动拉起审阅机制，导致任务滞留in_progress状态，CTO反复拉取任务形成死循环。\n\n正确流程：\n1. 员工完成任务并提交完成结果\n2. 系统自动拉起小龙（CEO-Agent）进行审阅\n3. 小龙审阅通过 → 任务归档\n4. 小龙审阅不通过 → 驳回并说明原因，重新分配\n\n断点修复前流程（错误的）：\nCTO提交完成 → 小龙未收到通知 → 任务仍in_progress → CTO继续拉取重复处理 → 循环\n\n断点修复后流程（正确的）：\nCTO提交完成 → 自动拉起小龙审阅 → 小龙审阅通过 → 归档关闭 → 循环终止",
+    "tags": [
+      "流程规则",
+      "自动化",
+      "任务管理",
+      "协作规范"
+    ],
+    "category": "",
+    "author": "ai_ceo",
+    "source": "manual",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-14T07:50:51.381Z",
+    "updatedAt": "2026-06-14T07:50:51.381Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_1",
+    "title": "系统架构概述",
+    "content": "eCompany系统基于模块化架构，核心服务器为server-modern.js（Node.js），运行在端口8005。AI引擎支持多模型路由，默认使用DeepSeek Chat。系统包含任务调度（scheduler）、BI自动化规则引擎（biAutomationRules）、认知层（cognitive）、团队管理（teamManager）、DAG依赖引擎（DAGEngine）、错误沉淀（ErrorSink）、SLA统计等核心模块。",
+    "tags": [
+      "系统",
+      "架构",
+      "Node.js"
+    ],
+    "category": "系统架构",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.892Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_2",
+    "title": "API 路由注册机制",
+    "content": "路由注册使用registerRoute(methods, pattern, handler)函数，将路由推入ROUTES数组。请求处理在server.on('request')中遍历ROUTES匹配。路由注册可在全局和server.listen回调内进行。",
+    "tags": [
+      "API",
+      "路由",
+      "Node.js"
+    ],
+    "category": "开发指南",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_3",
+    "title": "AI 引擎多模型路由",
+    "content": "selectModel函数根据路由表选择模型和provider。支持DeepSeek、OpenAI兼容接口。路由表在model-router.json中配置，支持关键词匹配（如\"查\"→simple模型，\"分析\"→analysis模型）。支持多模型和provider轮询。",
+    "tags": [
+      "AI",
+      "模型路由",
+      "DeepSeek"
+    ],
+    "category": "AI引擎",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_4",
+    "title": "CEO 工具系统",
+    "content": "execCEOTool函数是核心工具调度器，支持system_processes（进程查看）、system_disk（磁盘使用）、system_logs（日志查询）、system_api_trend（API趋势）、weather（天气查询）、exec（命令执行）等工具。每个工具返回result对象包含success和message。工具定义在CEO_TOOLS数组中。",
+    "tags": [
+      "CEO",
+      "工具",
+      "function_calling"
+    ],
+    "category": "AI引擎",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_5",
+    "title": "Harness 监控与边界控制",
+    "content": "Harness模块包含边界监控（agent-boundary）、SLA统计（sla）、错误沉淀（error-sink）、DAG依赖引擎（dag-engine）、熔断器（circuit-breaker）。边界监控支持速率限制、Agent任务超载保护。SLA统计从metrics.json读取采样数据计算p50/p75/p90/p95/p99延迟。错误沉淀自动分级（E1-E9）并聚合案例。",
+    "tags": [
+      "Harness",
+      "监控",
+      "SLA",
+      "错误"
+    ],
+    "category": "系统架构",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_6",
+    "title": "任务管理系统",
+    "content": "任务存储在tasks.json中，支持id、title、status（todo/pending/in_progress/completed/failed/blocked）、assigneeId、priority、dependsOn（依赖关系数组）、tags字段。DAGEngine负责环路检测、拓扑排序和阻塞计算。TaskQueue提供内存队列+WAL持久化。",
+    "tags": [
+      "任务",
+      "DAG",
+      "调度"
+    ],
+    "category": "任务系统",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_7",
+    "title": "BI 自动化规则引擎",
+    "content": "biAutomationRules模块管理338条规则（当前仅激活6条：3条系统内置+3条定时规则）。规则每30分钟扫描一次。支持条件表达式（基于jsonata或正则验证）和动作触发。规则文件为bi-rules.json。",
+    "tags": [
+      "BI",
+      "规则引擎",
+      "自动化"
+    ],
+    "category": "系统架构",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_sys_8",
+    "title": "Metrics 指标采集",
+    "content": "MetricsCollector（modules/metrics.js）负责采集工具调用的latency、success、tokensUsed等指标，按60分钟窗口保存最多10000条采样到metrics.json。支持告警阈值（错误率>15%、平均延迟>30s等）。recordToolCall方法在execCEOTool工具执行完毕后自动调用。",
+    "tags": [
+      "metrics",
+      "指标",
+      "监控"
+    ],
+    "category": "监控",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_team_1",
+    "title": "团队管理",
+    "content": "teamManager模块管理团队成员，支持团队列表查看、成员添加更新。每个成员有id、name、codeName、role、area、skills字段。团队信息在shared-context的team_members中维护。",
+    "tags": [
+      "团队",
+      "成员",
+      "管理"
+    ],
+    "category": "团队",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "kb_arch_1",
+    "title": "系统目录结构",
+    "content": "backend/ — 服务器根目录\n  server-modern.js — 主服务器入口\n  modules/ — 模块目录（metrics、sla、error-sink、dag-engine、agent-boundary等）\n  logs/ — 日志目录\n  tasks.json — 任务数据\n  knowledge-base.json — 知识库\n  metrics.json — 指标数据\n  bi-rules.json — BI规则\n  error-sink-data.json — 错误案例",
+    "tags": [
+      "目录",
+      "文件",
+      "结构"
+    ],
+    "category": "系统架构",
+    "author": "system",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-15T07:07:57.893Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "545baa12-beed-4060-991f-6e888d91b340",
+    "title": "系统功能测试 - 知识库写入测试",
+    "content": "【系统自检】2026/06/19 00:56 知识库写入功能测试，验证通过。",
+    "tags": [
+      "系统自检",
+      "测试"
+    ],
+    "category": "",
+    "author": "ai_ceo",
+    "source": "manual",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-18T17:41:06.578Z",
+    "updatedAt": "2026-06-18T17:41:06.578Z",
+    "history": [],
+    "type": "knowledge"
+  },
+  {
+    "id": "k_1781807804461_4hy1",
+    "type": "best_practice",
+    "content": "✅ 成功经验: 测试手动学习链路 — 验证Evolve知识提炼是否正常工作",
+    "source": "ai_ceo",
+    "confidence": "high",
+    "createdAt": "2026-06-18T18:36:44.461Z",
+    "appliedCount": 0
+  },
+  {
+    "id": "k_1781807804476_5gu2",
+    "type": "best_practice",
+    "content": "✅ 成功经验: 测试批量学习1",
+    "source": "ai_ceo",
+    "confidence": "high",
+    "createdAt": "2026-06-18T18:36:44.476Z",
+    "appliedCount": 0
+  },
+  {
+    "id": "k_1781807804480_6wla",
+    "type": "lesson_learned",
+    "content": "❌ 失败教训: 超时",
+    "source": "ai_ceo",
+    "confidence": "high",
+    "createdAt": "2026-06-18T18:36:44.480Z",
+    "appliedCount": 0
+  },
+  {
+    "id": "k_1781807912612_9btb",
+    "type": "best_practice",
+    "content": "✅ 成功经验: P95延迟优化 - 配置多提供商容灾 + 超时熔断机制",
+    "source": "cto-agent",
+    "confidence": "high",
+    "createdAt": "2026-06-18T18:38:32.612Z",
+    "appliedCount": 0
+  },
+  {
+    "id": "k_1781809664611_o6lr",
+    "type": "best_practice",
+    "content": "✅ 成功经验: 【闭环测试】系统健康评估并回传报告",
+    "source": "cto-agent",
+    "confidence": "high",
+    "createdAt": "2026-06-18T19:07:44.611Z",
+    "appliedCount": 0
+  },
+  {
+    "id": "72129834-2589-4873-8175-7bc0d1fe3b9f",
+    "title": "Test",
+    "content": "test",
+    "tags": [
+      "t",
+      "测试",
+      "质量"
+    ],
+    "category": "通用",
+    "author": "system",
+    "source": "manual",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-27T14:55:19.757Z",
+    "updatedAt": "2026-06-27T14:55:19.757Z",
+    "history": []
+  },
+  {
+    "id": "e659ba7c-2951-484d-8442-e74aaabf7c0c",
+    "title": "Test",
+    "content": "test",
+    "tags": [
+      "t",
+      "测试",
+      "质量"
+    ],
+    "category": "通用",
+    "author": "system",
+    "source": "manual",
+    "status": "active",
+    "version": 1,
+    "createdAt": "2026-06-27T15:15:09.240Z",
+    "updatedAt": "2026-06-27T15:15:09.240Z",
+    "history": []
+  },
+  {
+    "id": "k_1782838148768_lo0p",
+    "type": "best_practice",
+    "content": "✅ 成功经验: 【工具补充】为AI员工添加 memory_search 记忆搜索工具",
+    "source": "ai_ceo",
+    "confidence": "high",
+    "createdAt": "2026-06-30T16:49:08.768Z",
+    "appliedCount": 0
+  }
+]

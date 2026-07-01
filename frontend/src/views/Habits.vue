@@ -154,13 +154,21 @@ export default {
     async loadPending() {
       try {
         var r = await API.get('/api/harness/habits/pending');
-        if (Array.isArray(r)) this.pendingList = r;
+        // 兼容两种返回格式：{ok:true,pending:[...]} 或 纯数组
+        var list = r && r.pending ? r.pending : (Array.isArray(r) ? r : []);
+        this.pendingList = list;
       } catch(e) {}
     },
     async loadConfirmed() {
       try {
+        // 优先从 analysis 取，否则从 report 接口获取
         if (this.analysis && this.analysis.confirmedPreferences) {
           this.confirmedList = this.analysis.confirmedPreferences;
+        } else {
+          var rep = await API.get('/api/harness/habits/report');
+          if (rep && rep.data && rep.data.confirmedPreferences) {
+            this.confirmedList = rep.data.confirmedPreferences;
+          }
         }
       } catch(e) {}
     },
@@ -186,6 +194,7 @@ export default {
   mounted() {
     this.loadAnalysis();
     this.loadPending();
+    this.loadConfirmed();
   }
 }
 </script>

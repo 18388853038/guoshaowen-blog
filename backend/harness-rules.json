@@ -1,0 +1,193 @@
+[
+  {
+    "id": "const_dont_self_eval",
+    "name": "永远不要让模型自评",
+    "type": "constitutional",
+    "severity": "critical",
+    "status": "active",
+    "version": 2,
+    "short": "模型自评不可信",
+    "principle": "模型天然偏向接受自己的第一个答案。评估必须是模型之外的独立组件。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "Eval Runner 与推理进程分离为两个独立进程/服务。CEO 生成方案后，由独立的 Eval Agent（使用不同模型/温度/System Prompt）进行评估。两边各写入结构化文件，Harness 比较两边的 diff 后再决定是否输出。",
+      "check": "harness-constitution check --rule const_dont_self_eval",
+      "failIf": "检测到同一个模型在同一进程中同时承担生成和评估角色"
+    },
+    "tags": ["architecture", "eval", "decoupling"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_four_layer_defense",
+    "name": "约束要分层，至少建立四层防御",
+    "type": "constitutional",
+    "severity": "critical",
+    "status": "active",
+    "version": 2,
+    "short": "四层防御架构",
+    "principle": "System Prompt（宪法层，定义不可逾越的边界）→ Context Window 信息布局（策略层）→ Few-shot + Output Schema（执行层）→ 后处理校验 + 人工审批（兜底层）。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "每次新增/修改 Prompt 时，必须标注每条指令属于哪一层。Harness 提供 `harness-constitution check --rule const_four_layer_defense` 自动检查是否有缺失层。",
+      "check": "harness-constitution check --rule const_four_layer_defense",
+      "failIf": "任一 Prompt 文件缺少层标注，或任一层的指令数为 0"
+    },
+    "tags": ["architecture", "prompt", "defense-in-depth"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_spec_first",
+    "name": "遵循 Spec First（规格优先）",
+    "type": "constitutional",
+    "severity": "critical",
+    "status": "active",
+    "version": 2,
+    "short": "规格必须编码为机器可读文件",
+    "principle": "所有产品规格、架构决策必须编码为仓库内机器可读的结构化文件（如 AGENTS.md）。避免 Agent 依赖“人类脑子里的想法”。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "Harness 维护 `spec-registry.json`，每次构建/部署前扫描所有 Spec 文件是否被编码为结构化数据，未注册的 Spec 不能被 Agent 引用。CEO 提出的任何架构提议必须附带对应 Spec 文件。",
+      "check": "harness-constitution check --rule const_spec_first --dir backend/",
+      "failIf": "新增功能缺少对应的 spec/*.md 或 spec/*.json 文件"
+    },
+    "tags": ["architecture", "specification", "quality"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_self_validation",
+    "name": "强制自我验证与机械式架构检查",
+    "type": "constitutional",
+    "severity": "high",
+    "status": "active",
+    "version": 2,
+    "short": "Linter + CI 替代人工 Review",
+    "principle": "用自定义 Linter、结构测试、CI 自动化检查替代人工 Review。错误信息应专为 Agent 设计，包含明确的修复指令。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "Harness 提供 `harness-validate` CLI，支持：1) 自定义 Linter 规则检查（文件结构、命名约定、导入规则） 2) 结构测试（JSON Schema 校验） 3) CI gate 集成（validate 失败则阻断部署）。每次代码变更必须跑一次 validate，结果写入构建日志。",
+      "check": "harness-validate --all",
+      "failIf": "`harness-validate --all` 返回非零退出码"
+    },
+    "tags": ["automation", "quality", "ci"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_state_machine_protection",
+    "name": "设定状态机与上限保护",
+    "type": "constitutional",
+    "severity": "critical",
+    "status": "active",
+    "version": 2,
+    "short": "状态转移 + 失败上限保护",
+    "principle": "Agent 工作流应包含完整的状态转移图。必须设定上限保护，失败超过 N 次时强制停止并报告人类。",
+    "enforceMode": "rate_limit",
+    "enforcement": {
+      "mechanism": "Agent 每次进入工作流时，Harness 记录当前状态。提供 `harness-workflow status` 查看状态图。上限保护通过 active 规则 `rate_fail_limit`（每分钟失败不超过 5 次）、`rate_loop_limit`（每个 task 重试不超过 3 次）实现。",
+      "check": "engine condition: tool.callsPerMinute >= 5 && action.state === 'failed'",
+      "failIf": "任一 Agent 在工作流中连续失败 >= 3 次"
+    },
+    "tags": ["architecture", "safety", "workflow"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_artifact_contract",
+    "name": "明确产物契约（Artifact Contract）",
+    "type": "constitutional",
+    "severity": "high",
+    "status": "active",
+    "version": 2,
+    "short": "Agent 间必须通过文件传递信息",
+    "principle": "Agent 之间的信息传递不能仅依赖对话上下文（易截断/遗忘），必须通过写入文件传递，格式预先约定。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "所有 Agent 间交互必须先在 `artifact-contract-registry.json` 注册产物格式，包含：purpose（用途）、format（JSON Schema 或 Markdown 模板）、producer（生产者 Agent）、consumer（消费者 Agent）。Harness 的 `checkArtifactContract()` 在跨 Agent 调用前校验格式。",
+      "check": "harness-constitution check --rule const_artifact_contract",
+      "failIf": "Agent 调用其他 Agent 时未传递结构化文件，或文件格式与注册的不匹配"
+    },
+    "tags": ["architecture", "inter-agent", "traceability"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_progressive_context",
+    "name": "渐进披露上下文",
+    "type": "constitutional",
+    "severity": "high",
+    "status": "active",
+    "version": 2,
+    "short": "只提供最小定向信息，避免信息过载",
+    "principle": "不向 Agent 一次全量倾倒所有信息。只提供最小定向信息加上指向深层内容的指针。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "每次调用 Agent 时，Harness 分析 context 的总 token 数。超过上下文窗口 40% 时自动触发分层摘要。提供 `context-info` 摘要工具给 Agent，而非直接灌日志。",
+      "check": "harness-constitution check --rule const_progressive_context",
+      "failIf": "传递的 context token 数超过模型上下文窗口的 50%（例如 8K 模型的 context > 4K tokens）"
+    },
+    "tags": ["architecture", "context-management", "efficiency"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_guard_rails",
+    "name": "建立严格的护栏规则",
+    "type": "constitutional",
+    "severity": "critical",
+    "status": "active",
+    "version": 2,
+    "short": "每个 Agent 必须有禁止清单",
+    "principle": "明确列出每个 Agent 绝对不能做的事（禁止清单），防止越权。",
+    "enforceMode": "permission",
+    "enforcement": {
+      "mechanism": "每个 Agent 在注册时必须定义 `forbiddenTools` 和 `forbiddenOperations`。Harness 的 `checkToolPermission()` 在每次工具调用前检查。违规操作立即 block 并记录审计日志。",
+      "check": "engine condition: agent.role in scope.role (permission type rules)",
+      "failIf": "Agent 试图调用 forbidden 列表中的工具或操作",
+      "linkedRules": ["perm_no_promote_self", "perm_no_modify_runtime_config"]
+    },
+    "tags": ["safety", "permission", "governance"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_traces_feedback",
+    "name": "追踪即反馈",
+    "type": "constitutional",
+    "severity": "high",
+    "status": "active",
+    "version": 2,
+    "short": "Traces 是核心信号",
+    "principle": "必须建立可重复、自动化的日志分析和错误诊断流程。没有 Traces 就没有改进方向。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "所有 Agent 调用和工具调用必须结构化记录到 `agent-traces.jsonl`。提供 `harness-traces` CLI 支持查询、分析、回放。Harness Dashboard 展示 Traces 时序图和失败模式。",
+      "check": "harness-constitution check --rule const_traces_feedback",
+      "failIf": "任一 Agent 调用或工具调用未被写入 traces 文件"
+    },
+    "tags": ["observability", "debugging", "improvement"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  },
+  {
+    "id": "const_tolerance_threshold",
+    "name": "设定容忍阈值",
+    "type": "constitutional",
+    "severity": "medium",
+    "status": "active",
+    "version": 2,
+    "short": "微小偏差不值得 Re-prompt",
+    "principle": "模型输出 95% 满足要求但仅有微小瑕疵时，不改 Prompt，直接在后处理调整。",
+    "enforceMode": "pipeline",
+    "enforcement": {
+      "mechanism": "Harness 提供 `postProcess()` 管道，支持注册后处理函数纠正常见输出偏差（如标点符号、格式美化、字段补齐）。命中后处理的调用不产生违规记录，只记录一次 info 级别的日志。",
+      "check": "harness-constitution check --rule const_tolerance_threshold --log-only",
+      "failIf": "同一个后处理函数在同一条 prompt 上被触发超过 3 次（提示 Prompt 可能过宽）"
+    },
+    "tags": ["efficiency", "prompt", "stability"],
+    "createdAt": "2026-06-10T06:00:00.000Z",
+    "updatedAt": "2026-06-10T06:00:00.000Z"
+  }
+]

@@ -1,0 +1,306 @@
+{
+  "nodes": [
+    {
+      "id": "6ed09ce9-2c73-4e4d-a41f-8545d11116ef",
+      "label": "Test（已更新）",
+      "category": "测试质量",
+      "tags": [
+        "测试",
+        "质量"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "4e1384e6-3611-45cb-89f8-722a8a121c90",
+      "label": "系统配置",
+      "category": "系统配置",
+      "tags": [
+        "配置",
+        "系统"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_1781422932597_2t1g",
+      "label": "P95延迟过高排查与优化（7809ms/阈值5000ms）",
+      "category": "未分类",
+      "tags": [
+        "priority:high",
+        "scheduled"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "46a34547-f46d-4225-8b86-9501029cab00",
+      "label": "任务提交流程规则：自动拉起审阅",
+      "category": "未分类",
+      "tags": [
+        "流程规则",
+        "自动化",
+        "任务管理",
+        "协作规范"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_1",
+      "label": "系统架构概述",
+      "category": "系统架构",
+      "tags": [
+        "系统",
+        "架构",
+        "Node.js"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_2",
+      "label": "API 路由注册机制",
+      "category": "开发指南",
+      "tags": [
+        "API",
+        "路由",
+        "Node.js"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_3",
+      "label": "AI 引擎多模型路由",
+      "category": "AI引擎",
+      "tags": [
+        "AI",
+        "模型路由",
+        "DeepSeek"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_4",
+      "label": "CEO 工具系统",
+      "category": "AI引擎",
+      "tags": [
+        "CEO",
+        "工具",
+        "function_calling"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_5",
+      "label": "Harness 监控与边界控制",
+      "category": "系统架构",
+      "tags": [
+        "Harness",
+        "监控",
+        "SLA",
+        "错误"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_6",
+      "label": "任务管理系统",
+      "category": "任务系统",
+      "tags": [
+        "任务",
+        "DAG",
+        "调度"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_7",
+      "label": "BI 自动化规则引擎",
+      "category": "系统架构",
+      "tags": [
+        "BI",
+        "规则引擎",
+        "自动化"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_sys_8",
+      "label": "Metrics 指标采集",
+      "category": "监控",
+      "tags": [
+        "metrics",
+        "指标",
+        "监控"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_team_1",
+      "label": "团队管理",
+      "category": "团队",
+      "tags": [
+        "团队",
+        "成员",
+        "管理"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "kb_arch_1",
+      "label": "系统目录结构",
+      "category": "系统架构",
+      "tags": [
+        "目录",
+        "文件",
+        "结构"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "545baa12-beed-4060-991f-6e888d91b340",
+      "label": "系统功能测试 - 知识库写入测试",
+      "category": "未分类",
+      "tags": [
+        "系统自检",
+        "测试"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "k_1781807804461_4hy1",
+      "label": "Untitled",
+      "category": "未分类",
+      "tags": [],
+      "type": "entry"
+    },
+    {
+      "id": "k_1781807804476_5gu2",
+      "label": "Untitled",
+      "category": "未分类",
+      "tags": [],
+      "type": "entry"
+    },
+    {
+      "id": "k_1781807804480_6wla",
+      "label": "Untitled",
+      "category": "未分类",
+      "tags": [],
+      "type": "entry"
+    },
+    {
+      "id": "k_1781807912612_9btb",
+      "label": "Untitled",
+      "category": "未分类",
+      "tags": [],
+      "type": "entry"
+    },
+    {
+      "id": "k_1781809664611_o6lr",
+      "label": "Untitled",
+      "category": "未分类",
+      "tags": [],
+      "type": "entry"
+    },
+    {
+      "id": "72129834-2589-4873-8175-7bc0d1fe3b9f",
+      "label": "Test",
+      "category": "通用",
+      "tags": [
+        "t",
+        "测试",
+        "质量"
+      ],
+      "type": "entry"
+    },
+    {
+      "id": "e659ba7c-2951-484d-8442-e74aaabf7c0c",
+      "label": "Test",
+      "category": "通用",
+      "tags": [
+        "t",
+        "测试",
+        "质量"
+      ],
+      "type": "entry"
+    }
+  ],
+  "edges": [
+    {
+      "source": "6ed09ce9-2c73-4e4d-a41f-8545d11116ef",
+      "target": "72129834-2589-4873-8175-7bc0d1fe3b9f",
+      "weight": 0.6,
+      "sharedTags": [
+        "测试",
+        "质量"
+      ],
+      "type": "medium"
+    },
+    {
+      "source": "6ed09ce9-2c73-4e4d-a41f-8545d11116ef",
+      "target": "e659ba7c-2951-484d-8442-e74aaabf7c0c",
+      "weight": 0.6,
+      "sharedTags": [
+        "测试",
+        "质量"
+      ],
+      "type": "medium"
+    },
+    {
+      "source": "kb_sys_1",
+      "target": "kb_sys_5",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_1",
+      "target": "kb_sys_7",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_1",
+      "target": "kb_arch_1",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_3",
+      "target": "kb_sys_4",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_5",
+      "target": "kb_sys_7",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_5",
+      "target": "kb_arch_1",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "kb_sys_7",
+      "target": "kb_arch_1",
+      "weight": 0.4,
+      "sharedTags": [],
+      "type": "weak"
+    },
+    {
+      "source": "72129834-2589-4873-8175-7bc0d1fe3b9f",
+      "target": "e659ba7c-2951-484d-8442-e74aaabf7c0c",
+      "weight": 1,
+      "sharedTags": [
+        "t",
+        "测试",
+        "质量"
+      ],
+      "type": "strong"
+    }
+  ]
+}

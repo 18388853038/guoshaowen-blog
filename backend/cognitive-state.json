@@ -1,0 +1,42 @@
+{
+  "lastSyncAt": "2026-07-01T08:31:15.952Z",
+  "crossLinks": [
+    {
+      "from": "team-learning/auto-learning",
+      "to": "cognitive-state",
+      "type": "knowledge_unused",
+      "detail": "知识库有 23 条经验，但未被系统性地用于改善任务分配和优先级",
+      "severity": "low",
+      "foundAt": "2026-07-01T08:31:15.952Z"
+    },
+    {
+      "from": "team-learning/auto-learning",
+      "to": "cognitive-state",
+      "type": "knowledge_unused",
+      "detail": "知识库有 22 条经验，但未被系统性地用于改善任务分配和优先级",
+      "severity": "low",
+      "foundAt": "2026-06-30T16:48:45.005Z"
+    }
+  ],
+  "findings": [
+    {
+      "type": "cognitive_gap",
+      "detail": "发现 1 个认知层断裂点",
+      "gaps": [
+        "team-learning/auto-learning→cognitive-state: 知识库有 23 条经验，但未被系统性地用于改善任务分配和优先级"
+      ],
+      "id": 3768,
+      "ts": "2026-07-01T08:31:15.952Z"
+    },
+    {
+      "type": "sync_result",
+      "detail": "认知层同步完成: auto-learning(3)",
+      "id": 3769,
+      "ts": "2026-07-01T08:31:15.952Z"
+    }
+  ],
+  "insightCount": 3769,
+  "evolvedSkills": 0,
+  "createdAt": "2026-06-13T05:16:12.350Z",
+  "updatedAt": "2026-07-01T08:31:15.952Z"
+}

@@ -1,0 +1,10 @@
+{
+  "chat": {
+    "switched_to": "Switched to",
+    "file_hint": "Supports drag/drop files | Long text >500 chars auto-converts to file",
+    "new_avatar": "Create New AI Avatar",
+    "new_avatar_desc": "CEO will be instructed to create a new AI employee",
+    "drop_files": "Drop files here",
+    "paste_notice": "Files detected in clipboard. Click to paste."
+  }
+}
