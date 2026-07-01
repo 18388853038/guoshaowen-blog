@@ -1,0 +1,123 @@
+{
+  "rules": [
+    {
+      "id": "rule_cpu_high",
+      "name": "CPU 使用率过高",
+      "metric": "cpu_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 85
+      },
+      "severity": "warning",
+      "description": "CPU 使用率超过 85% 时告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 300000
+    },
+    {
+      "id": "rule_cpu_critical",
+      "name": "CPU 使用率极高",
+      "metric": "cpu_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 95
+      },
+      "severity": "critical",
+      "description": "CPU 使用率超过 95% 时紧急告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 60000
+    },
+    {
+      "id": "rule_mem_high",
+      "name": "内存使用率过高",
+      "metric": "mem_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 90
+      },
+      "severity": "warning",
+      "description": "内存使用率超过 90% 时告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 300000
+    },
+    {
+      "id": "rule_mem_critical",
+      "name": "内存使用率极高",
+      "metric": "mem_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 97
+      },
+      "severity": "critical",
+      "description": "内存使用率超过 97% 时紧急告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 60000
+    },
+    {
+      "id": "rule_disk_full",
+      "name": "磁盘使用率过高",
+      "metric": "disk_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 92
+      },
+      "severity": "warning",
+      "description": "磁盘使用率超过 92% 时告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 600000
+    },
+    {
+      "id": "rule_disk_critical",
+      "name": "磁盘即将写满",
+      "metric": "disk_percent",
+      "condition": {
+        "operator": "gt",
+        "value": 97
+      },
+      "severity": "critical",
+      "description": "磁盘使用率超过 97% 时紧急告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 120000
+    },
+    {
+      "id": "rule_process_high",
+      "name": "进程数过多",
+      "metric": "process_count",
+      "condition": {
+        "operator": "gt",
+        "value": 500
+      },
+      "severity": "warning",
+      "description": "系统进程数超过 500 时告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 600000
+    },
+    {
+      "id": "rule_health_status",
+      "name": "系统健康状态异常",
+      "metric": "health_status",
+      "condition": {
+        "operator": "ne",
+        "value": "healthy"
+      },
+      "severity": "critical",
+      "description": "系统健康检查状态不为 healthy 时告警",
+      "builtin": true,
+      "enabled": true,
+      "cooldownMs": 60000
+    }
+  ],
+  "customRules": [],
+  "lastFired": {
+    "rule_mem_high": 1782840173242,
+    "rule_mem_critical": 1782840296132,
+    "rule_health_status": 1782894778889
+  },
+  "updatedAt": "2026-07-01T08:32:58.889Z"
+}

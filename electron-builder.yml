@@ -1,0 +1,47 @@
+appId: com.ecompany.desktop
+productName: ECompany Asst
+copyright: Copyright 2026 eCompany
+
+directories:
+  output: release
+
+files:
+  - electron-main.cjs
+  - preload.js
+  - detect-lang.js
+
+extraResources:
+  - from: backend
+    to: backend
+    filter:
+      - "**/*"
+  - from: backend/node_modules
+    to: backend/node_modules
+    filter:
+      - "**/*"
+  - from: frontend/dist
+    to: frontend/dist
+    filter:
+      - "**/*"
+  - from: "."
+    to: "."
+    filter:
+      - .env
+      - favicon.ico
+      - logo.jpg
+      - node.exe
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+nodeGypRebuild: false
+npmRebuild: false
+
+win:
+  target: nsis
+
+icon: favicon.ico

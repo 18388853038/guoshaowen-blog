@@ -1,0 +1,14 @@
+{
+  "provider": "deepseek",
+  "model": "deepseek-chat",
+  "apiBase": "",
+  "apiKey": "sk-0ddd12cec6834b97a92201cee1e5c503",
+  "fallback": {
+    "enabled": true,
+    "providers": [
+      "siliconflow"
+    ],
+    "timeout": 5000,
+    "strategy": "failover"
+  }
+}
