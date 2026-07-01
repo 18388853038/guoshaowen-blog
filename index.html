@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECompany Asst — 企业级 AI 助手</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+    }
+    .container { max-width: 800px; margin: 0 auto; padding: 48px 24px; }
+    h1 { font-size: 2.2rem; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 40px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 32px; margin-bottom: 24px;
+    }
+    .card h2 { font-size: 1.3rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #238636; color: #fff; padding: 14px 28px;
+      border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #2ea043; }
+    .btn-small {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #21262d; color: var(--text); padding: 8px 16px;
+      border: 1px solid var(--border); border-radius: 6px; text-decoration: none;
+      font-size: 0.9rem; transition: background 0.2s; margin-right: 8px; margin-top: 8px;
+    }
+    .btn-small:hover { background: #30363d; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .meta-item { padding: 12px; background: var(--bg); border-radius: 8px; }
+    .meta-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .meta-value { font-size: 1rem; margin-top: 4px; }
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .feature-item {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; font-size: 0.9rem;
+    }
+    .feature-item strong { display: block; margin-bottom: 4px; color: var(--accent); }
+    footer {
+      text-align: center; color: var(--muted); font-size: 0.85rem;
+      padding: 32px 0; border-top: 1px solid var(--border); margin-top: 48px;
+    }
+    .badge {
+      display: inline-block; background: #1f6feb22; color: var(--accent);
+      padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 500;
+      border: 1px solid #1f6feb44;
+    }
+    @media (max-width: 600px) {
+      .meta-grid, .feature-grid { grid-template-columns: 1fr; }
+    }
+    .releases-list { list-style: none; }
+    .releases-list li { 
+      padding: 12px 0; border-bottom: 1px solid var(--border); 
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .releases-list li:last-child { border-bottom: none; }
+    .version-tag { color: var(--green); font-weight: 600; }
+    .date-tag { color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦉 ECompany Asst</h1>
+    <p class="subtitle">企业级 AI 助手桌面客户端 — 智能 · 高效 · 一体化</p>
+
+    <div class="card" style="text-align: center;">
+      <p style="margin-bottom: 20px; font-size: 1.05rem;">
+        最新版本 <strong>v2.0.0</strong> <span class="badge">稳定版</span>
+      </p>
+      <a class="btn" href="https://github.com/18388853038/guoshaowen-blog/releases/download/v2.0.0/ECompany.Asst.Setup.2.0.0.exe" target="_blank">
+        ⬇ 下载安装包 (160 MB)
+      </a>
+      <p style="margin-top: 12px; color: var(--muted); font-size: 0.85rem;">
+        Windows 10/11 64位 · NSIS 安装器 · 支持自定义安装路径
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>📦 版本信息</h2>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">当前版本</div>
+          <div class="meta-value">v2.0.0</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">发布日期</div>
+          <div class="meta-value" id="release-date">2026-07-01</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">文件大小</div>
+          <div class="meta-value">160.6 MB</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">系统要求</div>
+          <div class="meta-value">Windows 10/11 x64</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✨ 功能特性</h2>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <strong>🤖 AI 对话</strong>
+          内置企业级 AI CEO 助手，支持多轮对话、任务执行
+        </div>
+        <div class="feature-item">
+          <strong>🖱️ 桌面操作</strong>
+          截图、鼠标控制、窗口管理、键盘输入自动化
+        </div>
+        <div class="feature-item">
+          <strong>📁 文件管理</strong>
+          文件读写、目录操作、JSON/CSV 解析
+        </div>
+        <div class="feature-item">
+          <strong>🧩 工具扩展</strong>
+          支持动态安装/卸载自定义工具，灵活可扩展
+        </div>
+        <div class="feature-item">
+          <strong>👥 分身协作</strong>
+          通过 Sub-Agent 并行执行复杂任务
+        </div>
+        <div class="feature-item">
+          <strong>🧠 持久记忆</strong>
+          内置记忆引擎，支持长期知识存储与检索
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📋 安装指南</h2>
+      <ol style="margin-left: 20px; line-height: 2;">
+        <li>点击上方按钮下载最新安装包</li>
+        <li>双击运行安装程序</li>
+        <li>选择安装路径（或使用默认路径）</li>
+        <li>安装完成后桌面自动生成快捷方式</li>
+        <li>首次启动自动配置环境并初始化后端服务</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>🔧 技术栈</h2>
+      <div class="feature-grid">
+        <div class="feature-item"><strong>前端</strong> Vue 3 + Vite</div>
+        <div class="feature-item"><strong>后端</strong> Node.js + Express + WebSocket</div>
+        <div class="feature-item"><strong>桌面</strong> Electron 42</div>
+        <div class="feature-item"><strong>构建</strong> electron-builder</div>
+        <div class="feature-item"><strong>AI</strong> OpenClaw 多模型</div>
+        <div class="feature-item"><strong>图标</strong> 品牌定制</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📜 版本历史</h2>
+      <ul class="releases-list">
+        <li>
+          <span><span class="version-tag">v2.0.0</span> — 正式发布</span>
+          <span class="date-tag">2026-07-01</span>
+        </li>
+      </ul>
+    </div>
+
+    <footer>
+      <p>MIT License © 2026 ECompany</p>
+      <p style="margin-top: 8px;">
+        <a href="https://github.com/18388853038/guoshaowen-blog" style="color: var(--accent);">GitHub 仓库</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // 自动更新发布日期
+    document.getElementById('release-date').textContent = new Date().toISOString().split('T')[0];
+  </script>
+</body>
+</html>
