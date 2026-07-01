@@ -5,7 +5,23 @@
 > ⚠️ **从源码运行，非安装包**
 >
 > 本仓库包含 ECompany Asst 的**完整源代码**，而非预编译安装包。
-> 如需下载 Windows 桌面安装包（`.exe` 安装程序，含 Electron 桌面壳），请前往 [GitHub Releases](https://github.com/18388853038/guoshaowen-blog/releases) 页面下载。
+> 如需下载 Windows 桌面安装包，请见下方下载方式。
+
+---
+
+## 📥 下载方式
+
+### 方式一：百度网盘（推荐）
+
+| 文件 | 链接 | 提取码 |
+|------|------|--------|
+| `ECompany Asst -Windows版本.zip` | [百度网盘下载](https://pan.baidu.com/s/1WiEv0oGxYxU7KVBER9Rtlw?pwd=mktf) | `mktf` |
+
+> 百度网盘下载更稳定，适合国内用户。
+
+### 方式二：GitHub Releases
+
+安装包以 LFS 形式托管在 [GitHub Releases](https://github.com/18388853038/guoshaowen-blog/releases) 页面，下载速度受网络影响。
 
 ---
 
